@@ -12,5 +12,8 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('no');
+});
+Route::get('/yes', function () {
+    return view('yes');
 });
