@@ -26,12 +26,12 @@ Route::get('/', function () {
         'tweet_mode' => 'extended',
         'result_type' => 'recent'
     ]);
-    dump($content->statuses);
+    if (env('APP_ENV') != 'production') dump($content->statuses);
 
     $tweets = array_map(function($t) {
         return $t->full_text;
     }, $content->statuses);
-    dump($tweets);
+    if (env('APP_ENV') != 'production') dump($tweets);
 
     // $filtered_tweets = [];
 
@@ -47,7 +47,7 @@ Route::get('/', function () {
         preg_grep('/(without|no)\s\w?\s?delay/miU', $filteredTweets)
     );
 
-    dump($filteredTweets);
+    if (env('APP_ENV') != 'production') dump($filteredTweets);
 
     reset($filteredTweets);
     $key = key($filteredTweets);
@@ -59,7 +59,7 @@ Route::get('/', function () {
         $lrtDown = false;
     }
 
-    dump($lrtDown);
+    if (env('APP_ENV') != 'production') dump($lrtDown);
 
     return view('index', compact('lrtDown'));
 });

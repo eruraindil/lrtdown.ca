@@ -1,5 +1,23 @@
 <?php
 
+if (env('DATABASE_URL') !== null) {
+    $url = parse_url(env('DATABASE_URL'));
+
+    putenv('DB_HOST=' . $url['host']);
+    putenv('DB_DATABASE=' . substr($url["path"], 1));
+    putenv('DB_USERNAME=' . $url['user']);
+    putenv('DB_PASSWORD=' . $url['pass']);
+}
+
+if (env('REDIS_URL') !== null) {
+    $redisUrl = parse_url(env("REDIS_URL"));
+
+    putenv('REDIS_HOST=' . $redisUrl['host']);
+    putenv('REDIS_DB' . substr($redisUrl["path"], 1));
+    putenv('REDIS_USERNAME=' . $redisUrl['user']);
+    putenv('REDIS_PASSWORD=' . $redisUrl['pass']);
+}
+
 use Illuminate\Support\Str;
 
 return [
@@ -15,7 +33,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => env('DB_CONNECTION', 'pgsql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -70,7 +88,7 @@ return [
             'port' => env('DB_PORT', '5432'),
             'database' => env('DB_DATABASE', 'forge'),
             'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'password' => env('DB_PASSWORD', 'forge'),
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
