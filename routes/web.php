@@ -1,6 +1,7 @@
 <?php
 
 use Abraham\TwitterOAuth\TwitterOAuth;
+use App\Tweet;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,55 +15,22 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 */
 
 Route::get('/', function () {
-    $connection = new TwitterOAuth(
-        env('TWITTER_CONSUMER_KEY'),
-        env('TWITTER_CONSUMER_SECRET'),
-        env('TWITTER_ACCESS_TOKEN'),
-        env('TWITTER_ACCESS_SECRET')
-    );
-    $content = $connection->get('search/tweets', [
-        'q' => 'from:OCTranspoLive "Line 1"',
-        'count' => 1000,
-        'tweet_mode' => 'extended',
-        'result_type' => 'recent'
-    ]);
-    if (!App::environment('production')) dump($content->statuses);
 
-    $tweets = array_map(function($t) {
-        return $t->full_text;
-    }, $content->statuses);
-    if (!App::environment('production')) dump($tweets);
+    $tweet = Tweet::last()->first();
 
-    // $filtered_tweets = [];
+    $mins = $tweet->created->diffInMinutes('now');
+    $days = $tweet->created->diffInDays('now');
+    $lastUpdate = $tweet->created->diffForHumans();
 
-    // foreach ($content->statuses as $tweet) {
-    // }
-
-    $filteredTweets = preg_grep('/(delay|close)/miU', $tweets);
-
-    $filteredTweets = array_diff(
-        $filteredTweets,
-        preg_grep('/(minor|slight|small)\s\w?\s?(delay|delayed)/miU', $filteredTweets),
-        preg_grep('/(restore|complete|resume|open)/miU', $filteredTweets),
-        preg_grep('/(without|no)\s\w?\s?delay/miU', $filteredTweets)
-    );
-
-    if (!App::environment('production')) dump($filteredTweets);
-
-    reset($filteredTweets);
-    $key = key($filteredTweets);
-    $lastTweet = $content->statuses[$key];
-
-    if (strtotime($lastTweet->created_at) > strtotime('-24 hours')) {
-        $lrtDown = true;
-    } else {
-        $lrtDown = false;
+    $contextualClass = 'success';
+    $status = 'No';
+    if ($mins < 20) {
+        $contextualClass = 'danger';
+        $status = 'Yes';
+    } elseif ($mins < 60) {
+        $contextualClass = 'warning';
+        $status = 'Maybe ¯\_(ツ)_/¯';
     }
 
-    if (!App::environment('production')) dump($lrtDown);
-
-    return view('index', compact('lrtDown'));
-});
-Route::get('/yes', function () {
-    return view('yes');
+    return view('index', compact('contextualClass', 'status', 'lastUpdate'));
 });

@@ -1,23 +1,5 @@
 <?php
 
-if (env('DATABASE_URL') !== null) {
-    $url = parse_url(env('DATABASE_URL'));
-
-    putenv('DB_HOST=' . $url['host']);
-    putenv('DB_DATABASE=' . substr($url["path"], 1));
-    putenv('DB_USERNAME=' . $url['user']);
-    putenv('DB_PASSWORD=' . $url['pass']);
-}
-
-if (env('REDIS_URL') !== null) {
-    $redisUrl = parse_url(env("REDIS_URL"));
-
-    putenv('REDIS_HOST=' . $redisUrl['host']);
-    putenv('REDIS_DB' . substr($redisUrl["path"], 1));
-    putenv('REDIS_USERNAME=' . $redisUrl['user']);
-    putenv('REDIS_PASSWORD=' . $redisUrl['pass']);
-}
-
 use Illuminate\Support\Str;
 
 return [
