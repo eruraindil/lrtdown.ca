@@ -63,7 +63,7 @@ Artisan::command('getTweets', function () {
         $filteredTweets,
         preg_grep('/(minor|slight|small)\s(\w+\s)?(delay|delayed)/miU', $filteredTweets),
         preg_grep('/(restore|complete|resume|open|normal)/miU', $filteredTweets),
-        preg_grep('/(without|no)\s(\w+\s)?delay/miU', $filteredTweets)
+        preg_grep('/(without|no)\s(\w+\s)*delay/miU', $filteredTweets)
     );
     // if (!App::environment('production')) dump($filteredTweets);
     $this->comment('Filtered to ' . count($filteredTweets) . ' tweets');
