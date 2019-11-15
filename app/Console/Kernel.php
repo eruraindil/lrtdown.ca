@@ -26,7 +26,10 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
-        $schedule->command('getTweets')->cron('*/10 5-23 * * *');
+        $schedule->command('getTweets')
+            ->everyTenMinutes()
+            ->timezone(config('app.timezone'))
+            ->unlessBetween('1:00', '5:00');
     }
 
     /**
