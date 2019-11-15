@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
-        $schedule->command('getTweets')->cron('* * * * *');
+        $schedule->command('getTweets')->cron('*/10 5-23 * * *');
     }
 
     /**
