@@ -59,7 +59,7 @@
             <div class="card">
                 <div class="card-content">
                     <div class="content">
-                        <p>System status is determined automatically by parsing the <a href="https://twitter.com/OCTranspoLive" target="_blank">@@OCTranspoLive</a> Twitter account and using keywords to decide if tweets indicate a system failure.</p>
+                        <p>System status is determined automatically by parsing the <a href="https://twitter.com/OCTranspoLive" target="_blank">@@OCTranspoLive</a> Twitter account every 10 minutes and using keywords to decide if tweets indicate a system failure.</p>
                         <p>There may be false positives and false negatives, this is by no means a complete and perfect system.</p>
                         <p>If you'd like to help improve the logic, do so through Github issues or pull requests.</p>
                     </div>
