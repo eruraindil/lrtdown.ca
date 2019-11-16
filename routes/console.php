@@ -103,3 +103,16 @@ Artisan::command('getTweets', function () {
         $this->error('Nothing to save');
     }
 })->describe('Get tweets from OCTranspo');
+
+Artisan::command('tweet', function () {
+    echo "\u{30}\u{FE0F}\u{20E3}<br>";
+    echo "\u{31}\u{FE0F}\u{20E3}<br>";
+    echo "\u{32}\u{FE0F}\u{20E3}<br>";
+    echo "\u{33}\u{FE0F}\u{20E3}<br>";
+    echo "\u{34}\u{FE0F}\u{20E3}<br>";
+    echo "\u{35}\u{FE0F}\u{20E3}<br>";
+    echo "\u{36}\u{FE0F}\u{20E3}<br>";
+    echo "\u{37}\u{FE0F}\u{20E3}<br>";
+    echo "\u{38}\u{FE0F}\u{20E3}<br>";
+    echo "\u{39}\u{FE0F}\u{20E3}<br>";
+})->describe('Send out a tweet to the LRT Down twitter account');
