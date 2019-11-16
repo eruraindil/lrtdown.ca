@@ -105,14 +105,32 @@ Artisan::command('getTweets', function () {
 })->describe('Get tweets from OCTranspo');
 
 Artisan::command('tweet', function () {
-    echo "\u{30}\u{FE0F}\u{20E3}<br>";
-    echo "\u{31}\u{FE0F}\u{20E3}<br>";
-    echo "\u{32}\u{FE0F}\u{20E3}<br>";
-    echo "\u{33}\u{FE0F}\u{20E3}<br>";
-    echo "\u{34}\u{FE0F}\u{20E3}<br>";
-    echo "\u{35}\u{FE0F}\u{20E3}<br>";
-    echo "\u{36}\u{FE0F}\u{20E3}<br>";
-    echo "\u{37}\u{FE0F}\u{20E3}<br>";
-    echo "\u{38}\u{FE0F}\u{20E3}<br>";
-    echo "\u{39}\u{FE0F}\u{20E3}<br>";
+    echo "\u{30}\u{FE0F}\u{20E3}<br>"; // 0
+    echo "\u{31}\u{FE0F}\u{20E3}<br>"; // 1
+    echo "\u{32}\u{FE0F}\u{20E3}<br>"; // 2
+    echo "\u{33}\u{FE0F}\u{20E3}<br>"; // 3
+    echo "\u{34}\u{FE0F}\u{20E3}<br>"; // 4
+    echo "\u{35}\u{FE0F}\u{20E3}<br>"; // 5
+    echo "\u{36}\u{FE0F}\u{20E3}<br>"; // 6
+    echo "\u{37}\u{FE0F}\u{20E3}<br>"; // 7
+    echo "\u{38}\u{FE0F}\u{20E3}<br>"; // 8
+    echo "\u{39}\u{FE0F}\u{20E3}<br>"; // 9
 })->describe('Send out a tweet to the LRT Down twitter account');
+
+
+Artisan::command('debug:read', function () {
+    $headers = ['id', 'text', 'created'];
+    $tweets = Tweet::all(['id', 'text', 'created'])->toArray();
+    $this->table($headers, $tweets);
+})->describe('See db rows for debugging purposes.');
+
+Artisan::command('debug:delete {id}', function ($id) {
+    try {
+        $tweet = Tweet::findOrFail($id);
+        $tweet->delete();
+        $this->info('Tweet #' . $id . ' deleted.');
+    } catch (\Exception $e) {
+        $this->error('Unable to delete tweet #' . $id . '.');
+        $this->error($e->getMessage());
+    }
+})->describe('Delete a db row.');
