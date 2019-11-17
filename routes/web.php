@@ -16,7 +16,7 @@ use App\Tweet;
 
 Route::get('/', function () {
 
-    $tweet = Tweet::last()->first();
+    $tweet = Tweet::last()->get()[0];
 
     $mins = $tweet->created->diffInMinutes('now');
     $days = $tweet->created->diffInDays('now');

@@ -22,19 +22,6 @@
             </div>
         </div>
     </section>
-    {{--
-    <section class="hero is-success is-fullheight">
-        <div class="hero-body">
-            <div class="container has-text-centered">
-                <h1 class="title is-1">
-                    Is the LRT Down? No <small><em><a class="has-text-white" href="#">but maybe yes</a> ¯\_(ツ)_/¯</em></small>
-                </h1>
-                <h2 class="subtitle is-3">
-                    0️⃣ 1️⃣ days issue free
-                <h2>
-            </div>
-        </div>
-    </section>--}}
     <footer class="footer">
         <div class="content has-text-centered">
             <p>

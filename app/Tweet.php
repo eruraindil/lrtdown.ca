@@ -30,6 +30,6 @@ class Tweet extends Model
      */
     public function scopeLast($query)
     {
-        return $query->latest('created');
+        return $query->latest('created')->limit(1);
     }
 }
