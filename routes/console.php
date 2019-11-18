@@ -56,7 +56,7 @@ Artisan::command('getTweets', function () {
     $filteredTweets = array_diff(
         $filteredTweets,
         // preg_grep('/(minor|slight|small)\s(\w+\s)?(delay|delayed)/miU', $filteredTweets),
-        preg_grep('/(restore|complete|resume|open|normal)/miU', $filteredTweets),
+        preg_grep('/(restore|complete|resum|open|normal|resolv)/miU', $filteredTweets),
         preg_grep('/(without|no)\s(\w+\s)*delay/miU', $filteredTweets)
     );
     // if (!App::environment('production')) dump($filteredTweets);
@@ -93,15 +93,17 @@ Artisan::command('getTweets', function () {
     }
     if (count($filteredTweets)) {
         $this->info('Saved ' . count($filteredTweets) . ' tweets');
-        // Tweet
 
-        $status = 'Mr. Gaeta, restart the clock. ' . 0 . "\u{FE0F}\u{20E3}" . 0 . "\u{FE0F}\u{20E3}" . ' days since last issue. https://www.lrtdown.ca #ottlrt #OttawaLRT';
-        $update = $connection->post('statuses/update', ['status' => $status]);
+        if ($lastTweet->diffInMinutes('now') > 15) {
+            // Tweet but don't spam. only if greater than 15 mins since last tweet.
+            $status = 'Mr. Gaeta, restart the clock. ' . 0 . "\u{FE0F}\u{20E3}" . 0 . "\u{FE0F}\u{20E3}" . ' days since last issue. https://www.lrtdown.ca #ottlrt #OttawaLRT';
+            $update = $connection->post('statuses/update', ['status' => $status]);
 
-        if (isset($update)) {
-            $this->info('Tweet sent. ' . $update->id);
-        } else {
-            $this->error('Could not send tweet. ' . dump($update));
+            if (isset($update)) {
+                $this->info('Tweet sent. ' . $update->id);
+            } else {
+                $this->error('Could not send tweet. ' . dump($update));
+            }
         }
     } else {
         $this->error('Nothing to save');
