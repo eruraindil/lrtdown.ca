@@ -95,7 +95,7 @@ Artisan::command('getTweets', function () {
         $this->info('Saved ' . count($filteredTweets) . ' tweets');
         // Tweet
 
-        $status = 'Mr. Gaeta, restart the clock. ' . 0 . "\u{FE0F}\u{20E3}" . 0 . "\u{FE0F}\u{20E3}" . ' days since last issue. https://www.lrtdown.ca #ottlrt';
+        $status = 'Mr. Gaeta, restart the clock. ' . 0 . "\u{FE0F}\u{20E3}" . 0 . "\u{FE0F}\u{20E3}" . ' days since last issue. https://www.lrtdown.ca #ottlrt #OttawaLRT';
         $update = $connection->post('statuses/update', ['status' => $status]);
 
         if (isset($update)) {
@@ -133,7 +133,7 @@ Artisan::command('tweet', function () {
             $status .= $i . "\u{FE0F}\u{20E3}";
         }
 
-        $status .= ' days since last issue. https://www.lrtdown.ca #ottlrt';
+        $status .= ' days since last issue. https://www.lrtdown.ca #ottlrt #OttawaLRT';
 
         $connection = resolve('Abraham\TwitterOAuth\TwitterOAuth');
         $update = $connection->post('statuses/update', ['status' => $status]);
