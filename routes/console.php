@@ -93,6 +93,16 @@ Artisan::command('getTweets', function () {
     }
     if (count($filteredTweets)) {
         $this->info('Saved ' . count($filteredTweets) . ' tweets');
+        // Tweet
+
+        $status = 'Mr. Gaeta, restart the clock. ' . 0 . "\u{FE0F}\u{20E3}" . 0 . "\u{FE0F}\u{20E3}" . ' days since last issue. https://www.lrtdown.ca #ottlrt';
+        $update = $connection->post('statuses/update', ['status' => $status]);
+
+        if (isset($update)) {
+            $this->info('Tweet sent. ' . $update->id);
+        } else {
+            $this->error('Could not send tweet. ' . dump($update));
+        }
     } else {
         $this->error('Nothing to save');
     }
@@ -126,11 +136,11 @@ Artisan::command('tweet', function () {
         $status .= ' days since last issue. https://www.lrtdown.ca #ottlrt';
 
         $connection = resolve('Abraham\TwitterOAuth\TwitterOAuth');
-        $status = $connection->post('statuses/update', ['status' => $status]);
-        if (isset($status)) {
-            $this->info('Tweet sent. ' . $status->id);
+        $update = $connection->post('statuses/update', ['status' => $status]);
+        if (isset($update)) {
+            $this->info('Tweet sent. ' . $update->id);
         } else {
-            $this->error('Could not send tweet. ' . dump($status));
+            $this->error('Could not send tweet. ' . dump($update));
         }
     }
 })->describe('Send out a tweet to the LRT Down twitter account');
