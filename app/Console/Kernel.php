@@ -24,14 +24,19 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('getTweets')
+        $schedule->command('twitter:get')
             ->everyMinute()
-            ->timezone(config('app.timezone'))
             ->unlessBetween('1:00', '5:00');
+    }
 
-        $schedule->command('tweet')
-            ->dailyAt('13:00')
-            ->timezone(config('app.timezone'));
+    /**
+     * Get the timezone that should be used by default for scheduled events.
+     *
+     * @return \DateTimeZone|string|null
+     */
+    protected function scheduleTimezone()
+    {
+        return config('app.timezone');
     }
 
     /**
