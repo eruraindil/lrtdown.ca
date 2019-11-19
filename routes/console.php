@@ -81,8 +81,8 @@ Artisan::command('twitter:get', function () {
     if (count($filteredTweets)) {
         $this->info('Saved ' . count($filteredTweets) . ' tweets');
 
-        if ($lastTweet->created->diffInMinutes('now') > 15) {
-            // Tweet but don't spam. only if greater than 15 mins since last tweet.
+        if ($lastTweet->created->diffInMinutes('now') > 30) {
+            // Tweet but don't spam. only if greater than 30 mins since last tweet.
             $status = 'Mr. Gaeta, restart the clock. ' . 0 . "\u{FE0F}\u{20E3}" . 0 . "\u{FE0F}\u{20E3}" . "\u{00A0}" . 'days since last issue. https://www.lrtdown.ca #ottlrt #OttawaLRT';
             $update = $connection->post('statuses/update', ['status' => $status]);
 
