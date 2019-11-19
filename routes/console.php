@@ -81,12 +81,17 @@ Artisan::command('twitter:get', function () {
     if (count($filteredTweets)) {
         $this->info('Saved ' . count($filteredTweets) . ' tweets');
 
-        if ($lastTweet->created->diffInMinutes('now') > 30) {
-            // Tweet but don't spam. only if greater than 30 mins since last tweet.
-            $status = 'Mr. Gaeta, restart the clock. ' . 0 . "\u{FE0F}\u{20E3}" . 0 . "\u{FE0F}\u{20E3}" . "\u{00A0}" . 'days since last issue. https://www.lrtdown.ca #ottlrt #OttawaLRT';
+        if ($lastTweet->created->diffInDays('now') > 0) {
+            // Tweet if greater than 1 day.
+            $status = 'Mr. Gaeta, restart the clock. ' .
+                'Update ' .
+                Carbon::now(config('app.timezone'))->toFormattedDateString() . ': ' .
+                0 . "\u{FE0F}\u{20E3}\u{2060}" .
+                0 . "\u{FE0F}\u{20E3}\u{00A0}" .
+                'days since last issue. https://www.lrtdown.ca #ottlrt #OttawaLRT';
             $update = $connection->post('statuses/update', ['status' => $status]);
 
-            if (isset($update)) {
+            if (isset($update) && isset($update->id)) {
                 $this->info('Tweet sent. ' . $update->id);
             } else {
                 $this->error('Could not send tweet. ' . dump($update));
@@ -101,19 +106,19 @@ Artisan::command('twitter:tweet', function () {
     $tweet = Tweet::last()->get()[0];
 
     if (isset($tweet) && ($days = $tweet->created->diffInDays('now')) > 0) {
-        $status = '';
+        $status = 'Update ' . Carbon::now(config('app.timezone'))->toFormattedDateString() . ': ';
         if (strlen($days) == 1) { // prepend a 0 on to numbers less than 10
             $status .= 0 . "\u{FE0F}\u{20E3}";
         }
         foreach (str_split($days) as $i) {
-            $status .= $i . "\u{FE0F}\u{20E3}";
+            $status .= "\u{2060}" . $i . "\u{FE0F}\u{20E3}";
         }
 
         $status .= "\u{00A0}" . 'days since last issue. https://www.lrtdown.ca #ottlrt #OttawaLRT';
 
         $connection = resolve('Abraham\TwitterOAuth\TwitterOAuth');
         $update = $connection->post('statuses/update', ['status' => $status]);
-        if (isset($update)) {
+        if (isset($update) && isset($update->id)) {
             $this->info('Tweet sent. ' . $update->id);
         } else {
             $this->error('Could not send tweet. ' . dump($update));
@@ -137,3 +142,20 @@ Artisan::command('debug:delete {id}', function ($id) {
         $this->error($e->getMessage());
     }
 })->describe('Delete a db row');
+
+Artisan::command('debug:tweet', function () {
+    $status = '@eruraindil ' .
+        'Update ' .
+        Carbon::now(config('app.timezone'))->toFormattedDateString() . ': ' .
+        0 . "\u{FE0F}\u{20E3}\u{2060}" .
+        0 . "\u{FE0F}\u{20E3}\u{00A0}" .
+        'testing encoding.';
+
+    $connection = resolve('Abraham\TwitterOAuth\TwitterOAuth');
+    $update = $connection->post('statuses/update', ['status' => $status]);
+    if (isset($update) && isset($update->id)) {
+        $this->info('Tweet sent. ' . $update->id);
+    } else {
+        $this->error('Could not send tweet. ' . dump($update));
+    }
+})->describe('Send a debug tweet out to the LRT Down twitter account');
