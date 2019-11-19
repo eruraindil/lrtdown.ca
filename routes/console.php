@@ -81,11 +81,12 @@ Artisan::command('twitter:get', function () {
     if (count($filteredTweets)) {
         $this->info('Saved ' . count($filteredTweets) . ' tweets');
 
-        if ($lastTweet->created->diffInDays('now') > 0) {
-            // Tweet if greater than 1 day.
+        if ($lastTweet->created->diffInMins('now') > 30) {
+            // Tweet if greater than 30 mins.
             $status = 'Mr. Gaeta, restart the clock. ' .
                 'Update ' .
-                Carbon::now(config('app.timezone'))->toFormattedDateString() . ': ' .
+                Carbon::now(config('app.timezone'))->toFormattedDateString() . ' ' .
+                Carbon::now(config('app.timezone'))->format('g:i A') . ': ' .
                 0 . "\u{FE0F}\u{20E3}\u{2060}" .
                 0 . "\u{FE0F}\u{20E3}\u{00A0}" .
                 'days since last issue. https://www.lrtdown.ca #ottlrt #OttawaLRT';
@@ -146,7 +147,8 @@ Artisan::command('debug:delete {id}', function ($id) {
 Artisan::command('debug:tweet', function () {
     $status = '@eruraindil ' .
         'Update ' .
-        Carbon::now(config('app.timezone'))->toFormattedDateString() . ': ' .
+        Carbon::now(config('app.timezone'))->toFormattedDateString() . ' ' .
+        Carbon::now(config('app.timezone'))->format('g:i A') . ': ' .
         0 . "\u{FE0F}\u{20E3}\u{2060}" .
         0 . "\u{FE0F}\u{20E3}\u{00A0}" .
         'testing encoding.';
