@@ -46,8 +46,8 @@
             <div class="card">
                 <div class="card-content">
                     <div class="content">
-                        <p>System status is determined automatically by parsing the <a href="https://twitter.com/OCTranspoLive" target="_blank">@@OCTranspoLive</a> Twitter account every 10 minutes and using keywords to decide if tweets indicate an LRT specific issue.</p>
-                        <p>There may be false positives and false negatives, or it may miss an outage completely if OCTranspo doesn't publish a service alert. This is by no means a complete or perfect system.</p>
+                        <p>System status is determined automatically by parsing the <a href="https://twitter.com/OCTranspoLive" target="_blank">@@OCTranspoLive</a> Twitter account every 10 minutes and using keywords to decide if tweets indicate an LRT specific system issue.</p>
+                        <p>There may be false positives and false negatives, or this may miss an outage completely if OCTranspo doesn't publish a service alert. This is by no means a complete or perfect system.</p>
                         <p>If you'd like to help improve the logic or anything else, do so through the project's Github.</p>
                     </div>
                 </div>

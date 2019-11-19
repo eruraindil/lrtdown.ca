@@ -1,12 +1,14 @@
 # LRTdown
 
-Website to show Ottawa's LRT status.
+Website to show Ottawa's current LRT Line 1 status. Daily and as-it-happens updates on Twitter (@LRTdown)[https://twitter.com/LRTdown].
 
-System status is determined automatically by parsing the @OCTranspoLive Twitter account every 10 minutes and using keywords to decide if tweets indicate a system failure.
+This is 90% lighthearted and 10% serious.
+
+System status is determined automatically by parsing the (@OCTranspoLive)[https://twitter.com/OCTranspoLive] Twitter account every 10 minutes and using keywords to decide if tweets indicate an LRT specific system issue.
 
 ## Issues
 
-There may be false positives and false negatives, this is by no means a complete and perfect system.
+There may be false positives and false negatives, or this may miss an outage completely if OCTranspo doesn't publish a service alert. This is by no means a complete or perfect system.
 
 ## Contributing
 
