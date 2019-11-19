@@ -81,7 +81,7 @@ Artisan::command('twitter:get', function () {
     if (count($filteredTweets)) {
         $this->info('Saved ' . count($filteredTweets) . ' tweets');
 
-        if ($lastTweet->created->diffInMins('now') > 30) {
+        if ($lastTweet->created->diffInMinutes('now') > 30) {
             // Tweet if greater than 30 mins.
             $status = 'Mr. Gaeta, restart the clock. ' .
                 'Update ' .
