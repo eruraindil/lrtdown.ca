@@ -83,7 +83,7 @@ Artisan::command('twitter:get', function () {
 
         if ($lastTweet->created->diffInMinutes('now') > 15) {
             // Tweet but don't spam. only if greater than 15 mins since last tweet.
-            $status = 'Mr. Gaeta, restart the clock. ' . 0 . "\u{FE0F}\u{20E3}" . 0 . "\u{FE0F}\u{20E3}" . ' days since last issue. https://www.lrtdown.ca #ottlrt #OttawaLRT';
+            $status = 'Mr. Gaeta, restart the clock. ' . 0 . "\u{FE0F}\u{20E3}" . 0 . "\u{FE0F}\u{20E3}" . "\u{00A0}" . 'days since last issue. https://www.lrtdown.ca #ottlrt #OttawaLRT';
             $update = $connection->post('statuses/update', ['status' => $status]);
 
             if (isset($update)) {
@@ -109,7 +109,7 @@ Artisan::command('twitter:tweet', function () {
             $status .= $i . "\u{FE0F}\u{20E3}";
         }
 
-        $status .= ' days since last issue. https://www.lrtdown.ca #ottlrt #OttawaLRT';
+        $status .= "\u{00A0}" . 'days since last issue. https://www.lrtdown.ca #ottlrt #OttawaLRT';
 
         $connection = resolve('Abraham\TwitterOAuth\TwitterOAuth');
         $update = $connection->post('statuses/update', ['status' => $status]);
