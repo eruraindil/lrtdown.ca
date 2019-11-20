@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Cache;
 use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Tweet;
 
@@ -15,8 +16,9 @@ use App\Tweet;
 */
 
 Route::get('/', function () {
-
-    $tweet = Tweet::last()->get()[0];
+    $tweet = Cache::rememberForever('lastTweet', function () {
+        return Tweet::last()->get()[0];
+    });
 
     $mins = $tweet->created->diffInMinutes('now');
     $days = $tweet->created->diffInDays('now');
