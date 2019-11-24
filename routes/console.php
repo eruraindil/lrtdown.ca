@@ -54,7 +54,7 @@ Artisan::command('twitter:get', function () {
         Log::debug($tweet);
     }
 
-    $filteredTweets = preg_grep('/((delay|close)|(eastbound.*westbound|westbound.*eastbound)|(eastbound|westbound)\s?(platform)?\sonly|r1.*between)/miU', $tweets);
+    $filteredTweets = preg_grep('/((delay|close)|(eastbound.*westbound|westbound.*eastbound)|(eastbound|westbound)\s?(platform)?\sonly|r1.*between|allow extra travel time|switch issue)/miU', $tweets);
 
     $filteredTweets = array_diff(
         $filteredTweets,
@@ -98,8 +98,9 @@ Artisan::command('twitter:get', function () {
         $newTweet = Tweet::last()->get()[0];
         Cache::put('lastTweet', $newTweet);
 
-        if ($lastTweet->created->diffInMinutes('now') > 30) {
-            // Tweet if greater than 30 mins.
+        $tweetTime = $lastTweet->created->diffInMinutes('now');
+        if ($tweetTime > 30 && $tweetTime < 120) {
+            // Tweet if greater than 30 mins and less than 2 hrs
             $status = 'Mr. Gaeta, restart the clock. ' .
                 'Update ' .
                 $newTweet->created->toFormattedDateString() . ' ' .
