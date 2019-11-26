@@ -99,8 +99,8 @@ Artisan::command('twitter:get', function () {
         Cache::put('lastTweet', $newTweet);
 
         $tweetTime = $lastTweet->created->diffInMinutes('now');
-        if ($tweetTime > 30 && $tweetTime < 120) {
-            // Tweet if greater than 30 mins and less than 2 hrs
+        if ($tweetTime > 30) {
+            // Tweet if greater than 30 mins since the last tweet
             $status = 'Mr. Gaeta, restart the clock. ' .
                 'Update ' .
                 $newTweet->created->toFormattedDateString() . ' ' .
