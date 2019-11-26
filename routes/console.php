@@ -171,6 +171,7 @@ Artisan::command('debug:delete {id}', function ($id) {
     try {
         $tweet = Tweet::findOrFail($id);
         $tweet->delete();
+        Cache::forget('lastTweet');
         $this->info('Tweet #' . $id . ' deleted.');
         Log::info('Tweet #' . $id . ' deleted.');
     } catch (\Exception $e) {
