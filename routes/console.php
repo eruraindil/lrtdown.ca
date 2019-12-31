@@ -54,7 +54,7 @@ Artisan::command('twitter:get', function () {
         Log::debug($tweet);
     }
 
-    $filteredTweets = preg_grep('/((delay|close)|(eastbound.*westbound|westbound.*eastbound)|(eastbound|westbound)\s?(platform)?\sonly|r1.*between|allow extra travel time|experience (slightly\s)?longer travel time|switch issue|replacement bus|door fault|stopped train|(must|should) use ((eastbound|westbound) )?platform|wait times of up to \d\d+ (minutes|mins))/miU', $tweets);
+    $filteredTweets = preg_grep('/((delay|close)|(eastbound.*westbound|westbound.*eastbound)|(eastbound|westbound)\s?(platform)?\sonly|r1.*(between|operat)|allow extra travel time|experience (slightly\s)?longer travel time|switch issue|replacement bus|door fault|stopped train|(must|should) use ((eastbound|westbound) )?platform|wait times of up to \d\d+ (minutes|mins))/miU', $tweets);
 
     $filteredTweets = array_diff(
         $filteredTweets,
