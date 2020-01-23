@@ -61,7 +61,7 @@ Artisan::command('twitter:get', function () {
         preg_grep('/(restore|complete|resum|open|normal|resolv|ended)/miU', $filteredTweets),
         preg_grep('/(without|no)\s(\w+\s)*delay/miU', $filteredTweets),
         preg_grep('/(in anticipation|tomorrow)/miU', $filteredTweets),
-        preg_grep('/(currently 13 trains| 13 trains (are\s)?in service/miU', $filteredTweets),
+        preg_grep('/(currently 13 trains| 13 trains (are\s)?in service/miU', $filteredTweets)
     );
 
     $this->comment('Filtered to ' . count($filteredTweets) . ' tweets');
