@@ -59,7 +59,8 @@ Artisan::command('twitter:get', function () {
     $filteredTweets = array_diff(
         $filteredTweets,
         preg_grep('/(restore|complete|resum|open|normal|resolv|ended)/miU', $filteredTweets),
-        preg_grep('/(without|no)\s(\w+\s)*delay/miU', $filteredTweets)
+        preg_grep('/(without|no)\s(\w+\s)*delay/miU', $filteredTweets),
+        preg_grep('/(in anticipation|tomorrow)/miU', $filteredTweets)
     );
 
     $this->comment('Filtered to ' . count($filteredTweets) . ' tweets');
