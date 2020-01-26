@@ -34,5 +34,13 @@ Route::get('/', function () {
         $status = 'Maybe ¯\_(ツ)_/¯';
     }
 
-    return view('index', compact('contextualClass', 'status', 'lastUpdate'));
+    list($startDate, $endDate) = Cache::rememberForever('longestStreak', function () {
+        return Tweet::streak();
+    });
+
+    $days = $startDate->diffInDays($endDate);
+
+    $longestStreak = $days . ' day' . ($days > 1 ? 's' : '') . ' between ' . $startDate->toFormattedDateString() . ' and ' . $endDate->toFormattedDateString();
+
+    return view('index', compact('contextualClass', 'status', 'lastUpdate', 'longestStreak'));
 });

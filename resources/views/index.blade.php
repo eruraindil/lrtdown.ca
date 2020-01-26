@@ -21,6 +21,15 @@
                 <h2>
             </div>
         </div>
+        <div class="hero-foot">
+            <div class="container has-text-centered">
+                <div class="content is-large">
+                    <p>
+                        Longest uninterupted service streak: {{ $longestStreak }}.
+                    <p>
+                </div>
+            </div>
+        </div>
     </section>
     <footer class="footer">
         <div class="content has-text-centered">
