@@ -54,13 +54,14 @@ Artisan::command('twitter:get', function () {
         Log::debug($tweet);
     }
 
-    $filteredTweets = preg_grep('/((delay|close)|(eastbound.*westbound|westbound.*eastbound)|(eastbound|westbound)\s?(platform)?\sonly|r1.*(between|operat)|allow extra travel time|experience (slightly\s)?longer travel time|switch issue|replacement bus|door fault|stopped train|(must|should) use ((eastbound|westbound) )?platform|wait times of up to \d\d+ (minutes|mins)|reduced (train )?service|train shortage|shortage of trains|special bus service|trains (being\s)?held/miU', $tweets);
+    $filteredTweets = preg_grep('/((delay|close)|(eastbound.*westbound|westbound.*eastbound)|(eastbound|westbound)\s?(platform)?\sonly|r1.*(between|operat)|allow extra travel time|experience (slightly\s)?longer travel time|switch issue|replacement bus|door fault|stopped train|(must|should) use ((eastbound|westbound) )?platform|wait times of up to \d\d+ (minutes|mins)|reduced (train )?service|train shortage|shortage of trains|special bus(es| service)|currently \d\d? trains|\d\d? trains (are\s)?in service|trains (being\s)?held|power issues)/miU', $tweets);
 
     $filteredTweets = array_diff(
         $filteredTweets,
         preg_grep('/(restore|complete|resum|open|normal|resolv|ended)/miU', $filteredTweets),
         preg_grep('/(without|no)\s(\w+\s)*delay/miU', $filteredTweets),
-        preg_grep('/(in anticipation|tomorrow)/miU', $filteredTweets)
+        preg_grep('/(in anticipation|tomorrow)/miU', $filteredTweets),
+        preg_grep('/(currently 13 trains| 13 trains (are\s)?in service)/miU', $filteredTweets)
     );
 
     $this->comment('Filtered to ' . count($filteredTweets) . ' tweets');
