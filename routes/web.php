@@ -34,13 +34,17 @@ Route::get('/', function () {
         $status = 'Maybe ¯\_(ツ)_/¯';
     }
 
-    list($startDate, $endDate) = Cache::rememberForever('longestStreak', function () {
-        return Tweet::streak();
-    });
+    $streak = Cache::get('longestStreak');
+    if (isset($streak)) {
+        $startDate = $streak[0];
+        $endDate = $streak[1];
 
-    $days = $startDate->diffInDays($endDate);
+        $days = $startDate->diffInDays($endDate);
 
-    $longestStreak = $days . ' day' . ($days > 1 ? 's' : '') . ' between ' . $startDate->toFormattedDateString() . ' and ' . $endDate->toFormattedDateString();
+        $longestStreak = $days . ' day' . ($days > 1 ? 's' : '') . ' between ' . $startDate->toFormattedDateString() . ' and ' . $endDate->toFormattedDateString();
+    } else {
+        $longestStreak = null;
+    }
 
     return view('index', compact('contextualClass', 'status', 'lastUpdate', 'longestStreak'));
 });

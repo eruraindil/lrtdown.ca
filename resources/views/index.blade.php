@@ -21,6 +21,7 @@
                 <h2>
             </div>
         </div>
+        @if (isset($longestStreak))
         <div class="hero-foot">
             <div class="container has-text-centered">
                 <div class="content is-large">
@@ -30,6 +31,7 @@
                 </div>
             </div>
         </div>
+        @endif
     </section>
     <footer class="footer">
         <div class="content has-text-centered">

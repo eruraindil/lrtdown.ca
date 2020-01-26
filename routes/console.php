@@ -170,7 +170,7 @@ Artisan::command('twitter:streak', function () {
     if ($days > 0) {
         $status = 'The longest streak of uninterupted service has been ' .
             Tweet::formatKeycap($days) .
-            'days between ' .
+            'day' . ($days > 1 ? 's' : '') . ' between ' .
             $startDate->toFormattedDateString() . ' and ' .
             $endDate->toFormattedDateString() .
             '. https://www.lrtdown.ca #ottlrt #OttawaLRT';
