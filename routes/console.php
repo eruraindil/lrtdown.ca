@@ -4,6 +4,7 @@ use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
+use Carbon\CarbonInterval as CarbonInterval;
 use App\Tweet;
 
 /*
@@ -19,18 +20,19 @@ use App\Tweet;
 
 Artisan::command('twitter:get', function () {
     $lastTweet = Cache::rememberForever('lastTweet', function () {
-        return Tweet::last()->get()[0];
-    });
+        return Tweet::last()->firstOr(function () {
+            $lastTweet = new Tweet();
+            $lastTweet->uid = 0;
+            $lastTweet->created = Carbon::now();
 
-    if (!isset($lastTweet)) {
-        $lastTweet = new Tweet();
-        $lastTweet->uid = 0;
-    }
+            return $lastTweet;
+        });
+    });
 
     $connection = resolve('Abraham\TwitterOAuth\TwitterOAuth');
     $transpoTweets = $connection->get('search/tweets', [
         'q' => 'from:OCTranspoLive "Line 1" OR R1',
-        'count' => 1000,
+        'count' => 100,
         'tweet_mode' => 'extended',
         'result_type' => 'recent',
         'since_id' => $lastTweet->uid
@@ -42,48 +44,9 @@ Artisan::command('twitter:get', function () {
         return;
     }
 
-    $tweets = array_map(function($t) {
-        return $t->full_text;
-    }, $transpoTweets->statuses);
+    $filteredTweets = Tweet::filterOC($transpoTweets);
 
-    $this->comment('Read ' . count($tweets) . ' tweets');
-    Log::info('Read ' . count($tweets) . ' tweets');
-
-    foreach ($tweets as $tweet) {
-        $this->line($tweet);
-        Log::debug($tweet);
-    }
-
-    $filteredTweets = preg_grep('/((delay|close)|(eastbound.*westbound|westbound.*eastbound)|(eastbound|westbound)\s?(platform)?\sonly|r1.*(between|operat)|allow extra travel time|experience (slightly\s)?longer travel time|longer (wait and travel|travel and wait) time|switch issue|replacement bus|door fault|stopped train|(must|should) use ((eastbound|westbound) )?platform|wait times of up to \d\d+ (minutes|mins)|reduced (train )?service|train shortage|shortage of trains|special bus(es| service)|currently \d\d? trains|\d\d? trains (are\s)?in service|trains (are\s)?(being\s)?held|power issue)/miU', $tweets);
-
-    $filteredTweets = array_diff(
-        $filteredTweets,
-        preg_grep('/(restore|complete|resum|open|normal|resolv|ended)/miU', $filteredTweets),
-        preg_grep('/(without|no)\s(\w+\s)*delay/miU', $filteredTweets),
-        preg_grep('/(in anticipation|tomorrow)/miU', $filteredTweets),
-        preg_grep('/(currently 13 trains| 13 trains (are\s)?in service)/miU', $filteredTweets)
-    );
-
-    $this->comment('Filtered to ' . count($filteredTweets) . ' tweets');
-    Log::info('Filtered to ' . count($filteredTweets) . ' tweets');
-
-    $outputTweets = [];
-    foreach ($filteredTweets as $key => $value) {
-        $this->line($value);
-        $outputTweets[] = $transpoTweets->statuses[$key];
-    }
-
-    usort($outputTweets, function ($a, $b) {
-        $aInt = strtotime($a->created_at);
-        $bInt = strtotime($b->created_at);
-
-        if ($aInt == $bInt) {
-            return 0;
-        }
-        return $aInt < $bInt ? -1 : 1;
-    });
-
-    foreach ($outputTweets as $ot) {
+    foreach ($filteredTweets as $ot) {
         $tweet = Tweet::firstOrCreate(
             ['uid' => $ot->id],
             [
@@ -93,12 +56,14 @@ Artisan::command('twitter:get', function () {
             ]
         );
     }
+
     if (count($filteredTweets)) {
         $this->info('Saved ' . count($filteredTweets) . ' tweets');
         Log::info('Saved ' . count($filteredTweets) . ' tweets');
 
         $newTweet = Tweet::last()->get()[0];
         Cache::put('lastTweet', $newTweet);
+        Cache::put('longestStreak', Tweet::streak());
 
         $tweetTime = $lastTweet->created->diffInMinutes('now');
         if ($tweetTime > 30) {
@@ -112,8 +77,67 @@ Artisan::command('twitter:get', function () {
                 'days since last issue. https://www.lrtdown.ca #ottlrt #OttawaLRT';
 
             if (!App::environment('production')) {
-                $status = '@eruraindil ' . $status;
+                $this->info($status);
+            } else {
+                $update = $connection->post('statuses/update', ['status' => $status]);
+
+                if (isset($update) && isset($update->id)) {
+                    $this->info('Tweet sent. ' . $update->id);
+                    Log::info('Tweet sent. ' . $update->id);
+                } else {
+                    $this->error('Could not send tweet. ' . dump($update));
+                    Log::error('Could not send tweet. ' . dump($update));
+                }
             }
+        }
+    } else {
+        $this->info('Nothing to save');
+        Log::info('Nothing to save');
+    }
+})->describe('Get tweets from OCTranspoLive');
+
+Artisan::command('twitter:update', function () {
+    $tweet = Cache::rememberForever('lastTweet', function () {
+        return Tweet::last()->get()[0];
+    });
+
+    if (isset($tweet) && ($days = $tweet->created->diffInDays('now')) > 0) {
+        list($startDate, $endDate) = Cache::get('longestStreak', [
+            Carbon::now(config('app.timezone')),
+            Carbon::now(config('app.timezone')),
+        ]);
+
+        Log::debug($days);
+
+        $status = 'Update ' .
+            Carbon::now(config('app.timezone'))->toFormattedDateString() . ': ' .
+            Tweet::formatKeycap($days) .
+            'days since last issue. ';
+
+        $prevStreak = $startDate->diffInSeconds($endDate);
+        $thisStreak = $tweet->created->diffInSeconds('now');
+
+        Log::debug($prevStreak);
+        Log::debug($thisStreak);
+
+        if ($prevStreak > 0 && $thisStreak > $prevStreak) {
+            $interval = CarbonInterval::seconds($thisStreak)->subtract(
+                CarbonInterval::seconds($prevStreak)
+            );
+            $status .= 'New uninterupted service record! ' .
+                "\u{1F386}" . "\u{1F37E}" . "\u{1F386}" . ' ' .
+                '(increased by ' .
+                $interval->cascade()->forHumans() . ') ';
+
+            Cache::put('longestStreak', Tweet::streak());
+        }
+
+        $status .= 'https://www.lrtdown.ca #ottlrt #OttawaLRT';
+
+        if (!App::environment('production')) {
+            $this->info($status);
+        } else {
+            $connection = resolve('Abraham\TwitterOAuth\TwitterOAuth');
             $update = $connection->post('statuses/update', ['status' => $status]);
 
             if (isset($update) && isset($update->id)) {
@@ -124,44 +148,49 @@ Artisan::command('twitter:get', function () {
                 Log::error('Could not send tweet. ' . dump($update));
             }
         }
-    } else {
-        $this->info('Nothing to save');
-        Log::info('Nothing to save');
-    }
-})->describe('Get tweets from OCTranspo');
 
-Artisan::command('twitter:tweet', function () {
+    } else {
+        Log::debug('Less than 1 day since last tweet.' . dump($tweet));
+    }
+})->describe('Send out an update tweet to the LRT Down twitter account');
+
+Artisan::command('twitter:streak', function () {
     $tweet = Cache::rememberForever('lastTweet', function () {
         return Tweet::last()->get()[0];
     });
 
-    if (isset($tweet) && ($days = $tweet->created->diffInDays('now')) > 0) {
-        $status = 'Update ' . Carbon::now(config('app.timezone'))->toFormattedDateString() . ': ';
-        if (strlen($days) == 1) { // prepend a 0 on to numbers less than 10
-            $status .= 0 . "\u{FE0F}\u{20E3}";
-        }
-        foreach (str_split($days) as $i) {
-            $status .= "\u{2060}" . $i . "\u{FE0F}\u{20E3}";
-        }
+    list($startDate, $endDate) = Cache::rememberForever('longestStreak', function () {
+        return Tweet::streak();
+    });
 
-        $status .= "\u{00A0}" . 'days since last issue. https://www.lrtdown.ca #ottlrt #OttawaLRT';
+    $days = $startDate->diffInDays($endDate);
 
-        $connection = resolve('Abraham\TwitterOAuth\TwitterOAuth');
+    Log::debug($days);
+
+    if ($days > 0) {
+        $status = 'Reminder: The longest streak of uninterupted service is ' .
+            Tweet::formatKeycap($days) .
+            'days between ' .
+            $startDate->toFormattedDateString() . ' and ' .
+            $endDate->toFormattedDateString() .
+            '. https://www.lrtdown.ca #ottlrt #OttawaLRT';
 
         if (!App::environment('production')) {
-            $status = '@eruraindil ' . $status;
-        }
-        $update = $connection->post('statuses/update', ['status' => $status]);
-
-        if (isset($update) && isset($update->id)) {
-            $this->info('Tweet sent. ' . $update->id);
-            Log::info('Tweet sent. ' . $update->id);
+            $this->info($status);
         } else {
-            $this->error('Could not send tweet. ' . dump($update));
-            Log::error('Could not send tweet. ' . dump($update));
+            $connection = resolve('Abraham\TwitterOAuth\TwitterOAuth');
+            $update = $connection->post('statuses/update', ['status' => $status]);
+
+            if (isset($update) && isset($update->id)) {
+                $this->info('Tweet sent. ' . $update->id);
+                Log::info('Tweet sent. ' . $update->id);
+            } else {
+                $this->error('Could not send tweet. ' . dump($update));
+                Log::error('Could not send tweet. ' . dump($update));
+            }
         }
     }
-})->describe('Send out a tweet to the LRT Down twitter account');
+})->describe('Send out streak tweet to the LRT Down twitter account');
 
 Artisan::command('debug:read', function () {
     $headers = ['id', 'text', 'created'];
@@ -174,6 +203,7 @@ Artisan::command('debug:delete {id}', function ($id) {
         $tweet = Tweet::findOrFail($id);
         $tweet->delete();
         Cache::forget('lastTweet');
+        Cache::forget('longestStreak');
         $this->info('Tweet #' . $id . ' deleted.');
         Log::info('Tweet #' . $id . ' deleted.');
     } catch (\Exception $e) {
@@ -202,3 +232,8 @@ Artisan::command('debug:tweet', function () {
         Log::error('Could not send tweet. ' . dump($update));
     }
 })->describe('Send a debug tweet out to the LRT Down twitter account');
+
+Artisan::command('debug:clear', function () {
+    Cache::forget('lastTweet');
+    Cache::forget('longestStreak');
+})->describe('Clear app caches');
