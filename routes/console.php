@@ -168,7 +168,7 @@ Artisan::command('twitter:streak', function () {
     Log::debug($days);
 
     if ($days > 0) {
-        $status = 'Reminder: The longest streak of uninterupted service is ' .
+        $status = 'The longest streak of uninterupted service has been ' .
             Tweet::formatKeycap($days) .
             'days between ' .
             $startDate->toFormattedDateString() . ' and ' .
