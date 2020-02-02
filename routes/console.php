@@ -154,10 +154,10 @@ Artisan::command('twitter:update', function () {
     }
 })->describe('Send out an update tweet to the LRT Down twitter account');
 
-Artisan::command('twitter:streak', function () {
-    if(date('w') != 6) {
-        $this->info('Not Saturday, not scheduled for tweet');
-	Log::info('Not Saturday, not scheduled for tweet');
+Artisan::command('twitter:streak', function ($dow) {
+    if(date('w') != $dow) {
+        $this->info('Not day of week ' . $dow . ', not scheduled for tweet');
+	Log::info('Not day of week ' . $dow . ', not scheduled for tweet');
         return;
     }
 
@@ -196,7 +196,7 @@ Artisan::command('twitter:streak', function () {
             }
         }
     }
-})->describe('Send out streak tweet to the LRT Down twitter account, only on Saturdays');
+})->describe('Send out streak tweet to the LRT Down twitter account, only on day of week specified (php dow, 0 = Sun..6 = Sat)');
 
 Artisan::command('debug:read', function () {
     $headers = ['id', 'text', 'created'];
