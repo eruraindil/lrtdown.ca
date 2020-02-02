@@ -154,7 +154,7 @@ Artisan::command('twitter:update', function () {
     }
 })->describe('Send out an update tweet to the LRT Down twitter account');
 
-Artisan::command('twitter:streak', function ($dow) {
+Artisan::command('twitter:streak {dow}', function ($dow) {
     if(date('w') != $dow) {
         $this->info('Not day of week ' . $dow . ', not scheduled for tweet');
 	Log::info('Not day of week ' . $dow . ', not scheduled for tweet');
