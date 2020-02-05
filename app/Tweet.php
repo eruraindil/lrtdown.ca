@@ -76,7 +76,9 @@ class Tweet extends Model
             Log::debug($tweet);
         }
 
-        $filteredTweets = preg_grep('/((delay|close)|(eastbound.*westbound|westbound.*eastbound)|(eastbound|westbound)\s?(platform)?\sonly|r1.*(between|operat)|allow extra travel time|experience (slightly\s)?longer travel time|longer (wait and travel|travel and wait) time|switch issue|replacement bus|door fault|stopped train|(must|should) use ((eastbound|westbound) )?platform|wait times of up to \d\d+ (minutes|mins)|reduced (train )?service|train shortage|shortage of trains|(special|s1) bus(es| service)|currently \d\d? trains|\d\d? trains (are\s)?in service|trains (are\s)?(being\s)?held|power issue)/miU', $tweets);
+        $filteredTweets = preg_grep('/((delay|close)|(eastbound.*westbound|westbound.*eastbound)|(eastbound|westbound)\s?(platform)?\sonly|r1.*(between|operat)|allow extra travel time|experience (slightly\s)?longer travel time|longer (wait and travel|travel and wait) time|switch issue|replacement bus|door fault|stopped train|(must|should) use ((eastbound|westbound) )?platform|wait times of up to \d\d+ (minutes|mins)|reduced (train )?service|train shortage|shortage of trains|currently \d\d? trains|\d\d? trains (are\s)?in service|trains (are\s)?(being\s)?held|power issue)/miU', $tweets);
+
+        // (special|s1) bus(es| service) // removing S1 service from trigger phrases. https://twitter.com/LRTdown/status/1224699103646572544
 
         $filteredTweets = array_diff(
             $filteredTweets,
