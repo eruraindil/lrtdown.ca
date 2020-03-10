@@ -76,7 +76,7 @@ class Tweet extends Model
             Log::debug($tweet);
         }
 
-	$filteredTweets = preg_grep('/((delay|close)|(eastbound.*westbound|westbound.*eastbound)|(eastbound|westbound)\s?(platform)?\sonly|r1.*(service|between|operat|to|from)|allow extra travel time|experience (slightly\s)?longer travel time|longer waits|longer wait time|longer (wait and travel|travel and wait) time|switch issue|replacement bus|(door|brake) fault|stopped train|(must|should) use ((eastbound|westbound) )?platform|wait times of up to \d\d+ (minutes|mins)|reduced (train )?service|train shortage|shortage of trains|currently \d\d? trains|\d\d? trains (are\s)?in service|trains (are\s)?(being\s)?held|power issue|transfer between trains|(special|s1) (bus(es)?|service|run))/miU', $tweets);
+	$filteredTweets = preg_grep(config('regex.triggers'), $tweets);
 
 	// (special|s1) bus(es| service) // removing S1 service from trigger phrases. https://twitter.com/LRTdown/status/1224699103646572544
 	// 2020-03-10 re-add s1 because less than 13 standard trains in service, OC running S1 parallel. https://twitter.com/LRTdown/status/1237492441109987330

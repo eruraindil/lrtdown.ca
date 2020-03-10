@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Cache;
 use Abraham\TwitterOAuth\TwitterOAuth;
+use Stringy\Stringy as S;
 use App\Tweet;
 
 /*
