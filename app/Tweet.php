@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
+use Stringy\Stringy as S;
 
 class Tweet extends Model
 {
@@ -108,6 +109,19 @@ class Tweet extends Model
         });
 
         return $outputTweets;
+    }
+
+    public static function filterTrigger($tweetText)
+    {
+        $hasTrigger = preg_match(config('regex.triggers'), $tweetText, $matches);
+
+        $trigger = '';
+        if ($hasTrigger && count($matches)) {
+            $ignore = ['a', 'an', 'and', 'at', 'but', 'by', 'for', 'in', 'nor', 'of', 'on', 'or', 'out', 'so', 'the', 'to', 'yet'];
+            $trigger = S::create($matches[0])->titleize($ignore)->upperCaseFirst();
+        }
+
+        return $trigger;
     }
 
     /**

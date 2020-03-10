@@ -17,7 +17,11 @@
                     Is the LRT Down? {{ $status }}
                 </h1>
                 <h2 class="subtitle is-3">
-                    Last issue reported {{ $lastUpdate }}
+                    Last issue
+                    @if (isset($trigger))
+                        <span class="tag is-white is-medium">{{ $trigger }}</span>
+                    @endif
+                    reported {{ $lastUpdate }}
                 <h2>
             </div>
         </div>

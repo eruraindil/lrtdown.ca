@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Cache;
 use Abraham\TwitterOAuth\TwitterOAuth;
-use Stringy\Stringy as S;
 use App\Tweet;
 
 /*
@@ -24,6 +23,8 @@ Route::get('/', function () {
     $mins = $tweet->created->diffInMinutes('now');
     $days = $tweet->created->diffInDays('now');
     $lastUpdate = $tweet->created->diffForHumans();
+
+    $trigger = Tweet::filterTrigger($tweet->text);
 
     $contextualClass = 'success';
     $status = 'No';
@@ -47,5 +48,5 @@ Route::get('/', function () {
         $longestStreak = null;
     }
 
-    return view('index', compact('contextualClass', 'status', 'lastUpdate', 'longestStreak'));
+    return view('index', compact('contextualClass', 'status', 'trigger', 'lastUpdate', 'longestStreak'));
 });

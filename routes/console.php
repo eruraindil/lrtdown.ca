@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
 use Carbon\CarbonInterval as CarbonInterval;
-use Stringy\Stringy as S;
 use App\Tweet;
 
 /*
@@ -68,13 +67,8 @@ Artisan::command('twitter:get', function () {
 
         $tweetTime = $lastTweet->created->diffInMinutes('now');
         if ($tweetTime > 30) {
-            $hasTrigger = preg_match(config('regex.triggers'), $newTweet->text, $matches);
+            $trigger = Tweet::filterTrigger($newTweet->text);
 
-            $trigger = '';
-            if ($hasTrigger && count($matches)) {
-                $ignore = ['a', 'an', 'and', 'at', 'but', 'by', 'for', 'in', 'nor', 'of', 'on', 'or', 'out', 'so', 'the', 'to', 'yet'];
-                $trigger = '<' . S::create($matches[0])->titleize($ignore)->upperCaseFirst() . '> ';
-            }
             // Tweet if greater than 30 mins since the last tweet
             $status = 'Mr. Gaeta, restart the clock. ' .
                 'Update ' .
@@ -83,7 +77,7 @@ Artisan::command('twitter:get', function () {
                 0 . "\u{FE0F}\u{20E3}\u{2060}" .
                 0 . "\u{FE0F}\u{20E3}\u{00A0}" .
                 'days since last issue. ' .
-                $trigger .
+                (strlen($trigger) > 0 ? '<' . $trigger . '> ' : '') .
                 'https://www.lrtdown.ca #ottlrt #OttawaLRT';
 
             if (!App::environment('production')) {
