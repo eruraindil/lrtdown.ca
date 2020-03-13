@@ -7,9 +7,8 @@ This is 90% lighthearted and 10% serious.
 System status is determined automatically by parsing the [@OCTranspoLive](https://twitter.com/OCTranspoLive) Twitter account every 10 minutes and using keywords to decide if tweets indicate an LRT specific system issue.
 
 ## Issues
-
-There may be false positives and false negatives, or this may miss an outage completely if OCTranspo doesn't publish a service alert. This is by no means a complete or perfect system.
+There may be false positives, false negatives, or completely missed outages if OC Transpo decides not to publish a service alert. This is by no means a complete or perfect system, so tweet at me [@LRTdown](https://twitter.com/LRTdown) if something looks wrong or you just want to join the shenanigans.
 
 ## Contributing
 
-If you'd like to help improve the logic, or anything else, create an issue or submit a pull request.
+If you'd like to help improve the logic or anything else, issues and PRs accepted.

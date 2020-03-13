@@ -61,9 +61,9 @@
             <div class="card">
                 <div class="card-content">
                     <div class="content">
-                        <p>System status is determined automatically by parsing the <a href="https://twitter.com/OCTranspoLive" target="_blank">@@OCTranspoLive</a> Twitter account every 10 minutes and using keywords to decide if tweets indicate an LRT specific system issue.</p>
-                        <p>There may be false positives and false negatives, or this may miss an outage completely if OCTranspo doesn't publish a service alert. This is by no means a complete or perfect system.</p>
-                        <p>If you'd like to help improve the logic or anything else, do so through the project's Github.</p>
+                        <p>System status is determined automatically by parsing the <a href="https://twitter.com/OCTranspoLive" target="_blank">@@OCTranspoLive</a> Twitter account every 10 minutes and using <a href="https://raw.githubusercontent.com/eruraindil/lrtdown.ca/master/config/regex.php" target="_blank">keywords</a> to decide if tweets indicate an LRT specific system issue.</p>
+                        <p>There may be false positives, false negatives, or completely missed outages if OC Transpo decides not to publish a service alert. This is by no means a complete or perfect system, so tweet at <a href="https://twitter.com/LRTdown" target="_blank">@@LRTdown</a> if something looks wrong or you just want to join the shenanigans.</p>
+                        <p>If you'd like to help improve the logic or anything else, do so through the project's <a href="https://github.com/eruraindil/lrtdown.ca" target="_blank">Github</a>.</p>
                     </div>
                 </div>
             </div>
