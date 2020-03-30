@@ -21,7 +21,7 @@
                     @if (isset($trigger))
                         <span class="tag is-white is-medium">{{ $trigger }}</span>
                     @endif
-                    reported {{ $lastUpdate }}
+		    reported {{ $lastUpdate }}* 
                 <h2>
             </div>
         </div>
@@ -30,8 +30,14 @@
             <div class="container has-text-centered">
                 <div class="content is-large">
                     <p>
-                        Longest uninterupted service streak: {{ $longestStreak }}.
-                    <p>
+                        Longest uninterrupted service streak: {{ $longestStreak }}.*
+		    </p>
+                </div>
+                <div class="content is-medium">
+		    <p>
+			*LRT currently on reduced schedule due to COVID-19*<br>
+                        Longest uninterrupted full service streak: 5 days between Feb 20, 2020 and Feb 26, 2020.
+                    </p>  
                 </div>
             </div>
         </div>

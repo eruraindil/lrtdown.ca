@@ -116,7 +116,7 @@ Artisan::command('twitter:update', function () {
         $status = 'Update ' .
             Carbon::now(config('app.timezone'))->toFormattedDateString() . ': ' .
             Tweet::formatKeycap($days) .
-            'days since last issue. ';
+            'days since last issue.* ';
 
         $prevStreak = $startDate->diffInSeconds($endDate);
         $thisStreak = $tweet->created->diffInSeconds('now');
@@ -128,7 +128,7 @@ Artisan::command('twitter:update', function () {
             $interval = CarbonInterval::seconds($thisStreak)->subtract(
                 CarbonInterval::seconds($prevStreak)
             );
-            $status .= 'New uninterupted service record! ' .
+            $status .= 'New uninterrupted service record! ' .
                 "\u{1F386}" . "\u{1F37E}" . "\u{1F386}" . ' ' .
                 '(increased by ' .
                 $interval->cascade()->forHumans() . ') ';
@@ -136,7 +136,7 @@ Artisan::command('twitter:update', function () {
             Cache::put('longestStreak', Tweet::streak());
         }
 
-        $status .= 'https://www.lrtdown.ca #ottlrt #OttawaLRT';
+        $status .= '*LRT CURRENTLY ON REDUCED SCHEDULE* https://www.lrtdown.ca #ottlrt #OttawaLRT';
 
         if (!App::environment('production')) {
             $this->info($status);
