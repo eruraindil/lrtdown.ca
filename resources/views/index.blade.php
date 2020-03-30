@@ -16,32 +16,37 @@
                 <h1 class="title is-1">
                     Is the LRT Down? {{ $status }}
                 </h1>
-                <h2 class="subtitle is-3">
+                <p class="title is-3">
                     Last issue
                     @if (isset($trigger))
                         <span class="tag is-white is-medium">{{ $trigger }}</span>
                     @endif
-		    reported {{ $lastUpdate }}* 
-                <h2>
+                    reported {{ $lastUpdate }}*
+                </p>
+                @if (isset($longestStreak))
+                    <p class="subtitle is-5">
+                        Longest uninterrupted service streak: {{ $longestStreak }}.*
+                    </p>
+                @endif
             </div>
         </div>
-        @if (isset($longestStreak))
         <div class="hero-foot">
             <div class="container has-text-centered">
-                <div class="content is-large">
-                    <p>
-                        Longest uninterrupted service streak: {{ $longestStreak }}.*
-		    </p>
-                </div>
-                <div class="content is-medium">
-		    <p>
-			*LRT currently on reduced schedule due to COVID-19*<br>
-                        Longest uninterrupted full service streak: 5 days between Feb 20, 2020 and Feb 26, 2020.
-                    </p>  
+                <div class="columns">
+                    <div class="column is-three-fifths is-offset-one-fifth">
+                        <article class="message">
+                            <div class="message-header">
+                                <p>*LRT currently on reduced schedule due to COVID-19*</p>
+                            </div>
+                            <div class="message-body">
+                                Longest uninterrupted <b>full service</b> streak: 5 days between Feb 20, 2020 and Feb 26, 2020.
+                            </div>
+                        </article>
+                        <br>
+                    </div>
                 </div>
             </div>
         </div>
-        @endif
     </section>
     <footer class="footer">
         <div class="content has-text-centered">
