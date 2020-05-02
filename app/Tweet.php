@@ -141,16 +141,58 @@ class Tweet extends Model
             ];
         }
 
-        $longestDiff = $tweets[0]->created->diffInSeconds($tweets[1]->created);
-        $startDate = $tweets[0]->created;
-        $endDate = $tweets[1]->created;
+        $startDate = $tweets[0]->created->copy();
 
-        for ($i = 0; $i < count($tweets) - 1; $i++) {
-            $diff = $tweets[$i]->created->diffInSeconds($tweets[$i+1]->created);
+        // Handle maintenance days
+        foreach (config('app.maintenance_days') as $day) {
+            // Add a day for each maintenance day, to offset the counter (reduceing the difference)
+            // Maintenance days don't reset the clock but don't count as a day of service either.
+            if ($startDate->greaterThanOrEqualTo($day)) {
+                $startDate->addDay();
+            }
+        }
+
+        $endDate = $tweets[1]->created->copy();
+
+        // Handle maintenance days
+        foreach (config('app.maintenance_days') as $day) {
+            // Add a day for each maintenance day, to offset the counter (reduceing the difference)
+            // Maintenance days don't reset the clock but don't count as a day of service either.
+            if ($endDate->greaterThanOrEqualTo($day)) {
+                $endDate->addDay();
+            }
+        }
+
+        $longestDiff = $startDate->diffInSeconds($endDate);
+
+        for ($i = 1; $i < count($tweets) - 1; $i++) {
+            $newStartDate = $tweets[$i]->created->copy();
+
+            // Handle maintenance days
+            foreach (config('app.maintenance_days') as $day) {
+                // Add a day for each maintenance day, to offset the counter (reduceing the difference)
+                // Maintenance days don't reset the clock but don't count as a day of service either.
+                if ($newStartDate->greaterThanOrEqualTo($day)) {
+                    $newStartDate->addDay();
+                }
+            }
+
+            $newEndDate = $tweets[$i+1]->created->copy();
+
+            // Handle maintenance days
+            foreach (config('app.maintenance_days') as $day) {
+                // Add a day for each maintenance day, to offset the counter (reduceing the difference)
+                // Maintenance days don't reset the clock but don't count as a day of service either.
+                if ($newEndDate->greaterThanOrEqualTo($day)) {
+                    $newEndDate->addDay();
+                }
+            }
+
+            $diff = $newStartDate->diffInSeconds($newEndDate);
             if ($diff > $longestDiff) {
                 $longestDiff = $diff;
-                $startDate = $tweets[$i]->created;
-                $endDate = $tweets[$i+1]->created;
+                $startDate = $newStartDate;
+                $endDate = $newEndDate;
             }
         }
 
@@ -159,10 +201,20 @@ class Tweet extends Model
             return Tweet::last()->get()[0];
         });
 
-        $currDiff = $lastTweet->created->diffInSeconds('now');
+        // Handle maintenance days
+        $lastDate = $lastTweet->created->copy();
+        foreach (config('app.maintenance_days') as $day) {
+            // Add a day for each maintenance day, to offset the counter (reduceing the difference)
+            // Maintenance days don't reset the clock but don't count as a day of service either.
+            if ($lastDate->greaterThanOrEqualTo($day)) {
+                $lastDate->addDay();
+            }
+        }
+
+        $currDiff = $lastDate->diffInSeconds('now');
         if ($currDiff > $longestDiff) {
-            $startDate = $lastTweet->created;
-            $endDate = Carbon::now();
+            $startDate = $lastDate;
+            $endDate = Carbon::now(config('app.timezone'));
         }
 
         return [

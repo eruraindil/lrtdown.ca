@@ -229,4 +229,14 @@ return [
 
     ],
 
+
+    'maintenance_days' => [
+        Illuminate\Support\Carbon::createFromDate(2020, 5, 2, config('app.timezone')),
+        Illuminate\Support\Carbon::createFromDate(2020, 5, 3, config('app.timezone')),
+        Illuminate\Support\Carbon::createFromDate(2020, 5, 9, config('app.timezone')),
+        Illuminate\Support\Carbon::createFromDate(2020, 5, 10, config('app.timezone')),
+        Illuminate\Support\Carbon::createFromDate(2020, 5, 11, config('app.timezone')),
+        Illuminate\Support\Carbon::createFromDate(2020, 5, 12, config('app.timezone')),
+        Illuminate\Support\Carbon::createFromDate(2020, 5, 13, config('app.timezone')),
+    ]
 ];

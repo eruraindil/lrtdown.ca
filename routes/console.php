@@ -46,16 +46,31 @@ Artisan::command('twitter:get', function () {
 
     $filteredTweets = Tweet::filterOC($transpoTweets);
 
-    foreach ($filteredTweets as $ot) {
-        $tweet = Tweet::firstOrCreate(
-            ['uid' => $ot->id],
-            [
-                'text' => $ot->full_text,
-                'created' => Carbon::parse($ot->created_at, 'UTC')
-                    ->setTimezone(config('app.timezone'))
-            ]
-        );
+    foreach ($filteredTweets as $key => &$ot) {
+        $tweetDate = Carbon::parse($ot->created_at, 'UTC')->setTimeZone(config('app.timezone'));
+
+        $maintenance = false;
+        foreach (config('app.maintenance_days') as $day) {
+            if ($tweetDate->isSameDay($day)) {
+                $maintenance = true;
+            }
+        }
+
+        if ($maintenance === false) {
+            $tweet = Tweet::firstOrCreate(
+                ['uid' => $ot->id],
+                [
+                    'text' => $ot->full_text,
+                    'created' => $tweetDate,
+                ]
+            );
+        } else {
+            // unset an array element inside a foreach from: https://stackoverflow.com/a/1949275
+            unset($filteredTweets[$key]);
+        }
     }
+
+    unset($ot);
 
     if (count($filteredTweets)) {
         $this->info('Saved ' . count($filteredTweets) . ' tweets');
@@ -105,7 +120,34 @@ Artisan::command('twitter:update', function () {
         return Tweet::last()->get()[0];
     });
 
-    if (isset($tweet) && ($days = $tweet->created->diffInDays('now')) > 0) {
+    if (!isset($tweet)) {
+        return;
+    }
+
+    $tweetDate = $tweet->created->copy();
+    $now = Carbon::now(config('app.timezone'));
+
+    // Handle maintenance days
+    $maintenance = false;
+    foreach (config('app.maintenance_days') as $day) {
+        // Add a day for each maintenance day, to offset the counter (reduceing the difference)
+        // Maintenance days don't reset the clock but don't count as a day of service either.
+        if ($now->greaterThanOrEqualTo($day)) {
+            $tweetDate->addDay();
+        }
+
+        // If we happen to be on a maintenance day, flag it.
+        if ($now->isSameDay($day)) {
+            $maintenance = true;
+        }
+    }
+
+    // Find the number of days since the last issue tweet.
+    // (This may have been offset by maintenance days above)
+    $days = $tweetDate->diffInDays('now');
+
+    // Tweet an update once a day, only if we're not on maintenance today.
+    if ($days > 0 && $maintenance === false) {
         list($startDate, $endDate) = Cache::get('longestStreak', [
             Carbon::now(config('app.timezone')),
             Carbon::now(config('app.timezone')),
@@ -118,8 +160,9 @@ Artisan::command('twitter:update', function () {
             Tweet::formatKeycap($days) .
             'days since last issue.* ';
 
+        // Add streak info if new service record
         $prevStreak = $startDate->diffInSeconds($endDate);
-        $thisStreak = $tweet->created->diffInSeconds('now');
+        $thisStreak = $tweetDate->diffInSeconds('now');
 
         Log::debug($prevStreak);
         Log::debug($thisStreak);
@@ -136,6 +179,7 @@ Artisan::command('twitter:update', function () {
             Cache::put('longestStreak', Tweet::streak());
         }
 
+        // End of tweet boilerplate
         $status .= '*LRT CURRENTLY ON REDUCED SCHEDULE* https://www.lrtdown.ca #ottlrt #OttawaLRT';
 
         if (!App::environment('production')) {
@@ -161,7 +205,7 @@ Artisan::command('twitter:update', function () {
 Artisan::command('twitter:streak {dow}', function ($dow) {
     if(date('w') != $dow) {
         $this->info('Not day of week ' . $dow . ', not scheduled for tweet');
-	Log::info('Not day of week ' . $dow . ', not scheduled for tweet');
+        Log::info('Not day of week ' . $dow . ', not scheduled for tweet');
         return;
     }
 
@@ -246,4 +290,6 @@ Artisan::command('debug:tweet', function () {
 Artisan::command('debug:clear', function () {
     Cache::forget('lastTweet');
     Cache::forget('longestStreak');
+    Cache::put('lastTweet', Tweet::last()->get()[0]);
+    Cache::put('longestStreak', Tweet::streak());
 })->describe('Clear app caches');
