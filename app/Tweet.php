@@ -88,7 +88,8 @@ class Tweet extends Model
             preg_grep('/(without|no)\s(\w+\s)*delay/miU', $filteredTweets),
             preg_grep('/(in anticipation|tomorrow)/miU', $filteredTweets),
             preg_grep('/(currently 13 trains| 13 trains (are\s)?in service)/miU', $filteredTweets),
-            preg_grep('/s1.*reduced service/miU', $filteredTweets)
+            preg_grep('/s1.*reduced service/miU', $filteredTweets),
+            preg_grep('/will be on detour/miU', $filteredTweets)
         );
 
         Log::info('Filtered to ' . count($filteredTweets) . ' tweets');
