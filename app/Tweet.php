@@ -158,11 +158,11 @@ class Tweet extends Model
                 // day occurred during a streak, reducing the difference.
                 // Maintenance days don't reset the clock but don't count as a day of service either.
                 if ($newStartDate->lessThanOrEqualTo($day) && $newEndDate->greaterThanOrEqualTo($day)) {
-                    $counter->subDay();
+                    $newCounter->subDay();
                 }
             }
 
-            $diff = $newStartDate->diffInSeconds($counter);
+            $diff = $newStartDate->diffInSeconds($newCounter);
             if ($diff > $longestDiff) {
                 $longestDiff = $diff;
                 $startDate = $newStartDate;
