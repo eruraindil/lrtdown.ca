@@ -142,46 +142,15 @@ class Tweet extends Model
         }
 
         $maintenanceDays = config('app.maintenance_days');
-        $startDate = $tweets[0]->created->copy();
+        $startDate = null; //$tweets[0]->created->copy();
+        $endDate = null; //$tweets[1]->created->copy();
+        $counter = null; //$endDate->copy();
+        $longestDiff = 0;
 
-        // // Handle maintenance days
-        // foreach (config('app.maintenance_days') as $day) {
-        //     // Add a day for each maintenance day, to offset the counter (reducing the difference)
-        //     // Maintenance days don't reset the clock but don't count as a day of service either.
-        //     if ($startDate->greaterThanOrEqualTo($day)) {
-        //         $startDate->addDay();
-        //     }
-        // }
-
-        $endDate = $tweets[1]->created->copy();
-        $counter = $endDate->copy();
-
-        // Handle maintenance days
-        foreach ($maintenanceDays as $day) {
-            // Subtract a day for each maintenance day from the end of the streak, if the maintenace
-            // day occurred during a streak, reducing the difference.
-            // Maintenance days don't reset the clock but don't count as a day of service either.
-            if ($startDate->lessThanOrEqualTo($day) && $endDate->greaterThanOrEqualTo($day)) {
-                $counter->subDay();
-            }
-        }
-
-        $longestDiff = $startDate->diffInSeconds($counter);
-
-        for ($i = 1; $i < count($tweets) - 1; $i++) {
+        for ($i = 0; $i < count($tweets) - 1; $i++) {
             $newStartDate = $tweets[$i]->created->copy();
-
-            // // Handle maintenance days
-            // foreach (config('app.maintenance_days') as $day) {
-            //     // Add a day for each maintenance day, to offset the counter (reducing the difference)
-            //     // Maintenance days don't reset the clock but don't count as a day of service either.
-            //     if ($newStartDate->greaterThanOrEqualTo($day)) {
-            //         $newStartDate->addDay();
-            //     }
-            // }
-
             $newEndDate = $tweets[$i+1]->created->copy();
-            $counter = $newEndDate->copy();
+            $newCounter = $newEndDate->copy();
 
             // Handle maintenance days
             foreach ($maintenanceDays as $day) {
@@ -198,6 +167,7 @@ class Tweet extends Model
                 $longestDiff = $diff;
                 $startDate = $newStartDate;
                 $endDate = $newEndDate;
+                $counter = $newCounter;
             }
         }
 
