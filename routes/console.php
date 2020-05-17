@@ -150,7 +150,8 @@ Artisan::command('twitter:update', function () {
 
     // Tweet an update once a day, only if we're not on maintenance today.
     if ($days > 0 && $maintenance === false) {
-        list($startDate, $endDate) = Cache::get('longestStreak', [
+        list($startDate, $endDate, $counter) = Cache::get('longestStreak', [
+            Carbon::now(config('app.timezone')),
             Carbon::now(config('app.timezone')),
             Carbon::now(config('app.timezone')),
         ]);
@@ -163,7 +164,7 @@ Artisan::command('twitter:update', function () {
             'days since last issue.* ';
 
         // Add streak info if new service record
-        $prevStreak = $startDate->diffInSeconds($endDate);
+        $prevStreak = $startDate->diffInSeconds($counter);
         $thisStreak = $tweetDate->diffInSeconds('now');
 
         Log::debug($prevStreak);
@@ -215,11 +216,11 @@ Artisan::command('twitter:streak {dow}', function ($dow) {
         return Tweet::last()->get()[0];
     });
 
-    list($startDate, $endDate) = Cache::rememberForever('longestStreak', function () {
+    list($startDate, $endDate, $counter) = Cache::rememberForever('longestStreak', function () {
         return Tweet::streak();
     });
 
-    $days = $startDate->diffInDays($endDate);
+    $days = $startDate->diffInDays($counter);
 
     Log::debug($days);
 
