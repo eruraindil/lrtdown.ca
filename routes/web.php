@@ -36,12 +36,8 @@ Route::get('/', function () {
         $status = 'Maybe ¯\_(ツ)_/¯';
     }
 
-    $streak = Cache::get('longestStreak');
-    if (isset($streak)) {
-        $startDate = $streak[0];
-        $endDate = $streak[1];
-        $counter = $streak[2];
-
+    list($startDate, $endDate, $counter) = Cache::get('longestStreak');
+    if (isset($startDate) && isset($endDate) && isset($counter)) {
         $days = $startDate->diffInDays($counter);
 
         $longestStreak = $days . ' day' . ($days > 1 ? 's' : '') . ' between ' . $startDate->toFormattedDateString() . ' and ' . $endDate->toFormattedDateString();
