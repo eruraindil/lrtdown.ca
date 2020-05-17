@@ -130,9 +130,11 @@ Artisan::command('twitter:update', function () {
     // Handle maintenance days
     $maintenance = false;
     foreach (config('app.maintenance_days') as $day) {
-        // Add a day for each maintenance day, to offset the counter (reduceing the difference)
+        // Add a day for each maintenance day, to offset the counter (reducing the difference)
         // Maintenance days don't reset the clock but don't count as a day of service either.
-        if ($now->greaterThanOrEqualTo($day)) {
+        // Only consider if the last issue was before the maintenance day, otherwise it doesn't
+        // affect the counter.
+        if ($tweetDate->lessThanOrEqualTo($day) && $now->greaterThanOrEqualTo($day)) {
             $tweetDate->addDay();
         }
 

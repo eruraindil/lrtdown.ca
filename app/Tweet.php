@@ -145,7 +145,7 @@ class Tweet extends Model
 
         // Handle maintenance days
         foreach (config('app.maintenance_days') as $day) {
-            // Add a day for each maintenance day, to offset the counter (reduceing the difference)
+            // Add a day for each maintenance day, to offset the counter (reducing the difference)
             // Maintenance days don't reset the clock but don't count as a day of service either.
             if ($startDate->greaterThanOrEqualTo($day)) {
                 $startDate->addDay();
@@ -156,7 +156,7 @@ class Tweet extends Model
 
         // Handle maintenance days
         foreach (config('app.maintenance_days') as $day) {
-            // Add a day for each maintenance day, to offset the counter (reduceing the difference)
+            // Add a day for each maintenance day, to offset the counter (reducing the difference)
             // Maintenance days don't reset the clock but don't count as a day of service either.
             if ($endDate->greaterThanOrEqualTo($day)) {
                 $endDate->addDay();
@@ -170,7 +170,7 @@ class Tweet extends Model
 
             // Handle maintenance days
             foreach (config('app.maintenance_days') as $day) {
-                // Add a day for each maintenance day, to offset the counter (reduceing the difference)
+                // Add a day for each maintenance day, to offset the counter (reducing the difference)
                 // Maintenance days don't reset the clock but don't count as a day of service either.
                 if ($newStartDate->greaterThanOrEqualTo($day)) {
                     $newStartDate->addDay();
@@ -181,7 +181,7 @@ class Tweet extends Model
 
             // Handle maintenance days
             foreach (config('app.maintenance_days') as $day) {
-                // Add a day for each maintenance day, to offset the counter (reduceing the difference)
+                // Add a day for each maintenance day, to offset the counter (reducing the difference)
                 // Maintenance days don't reset the clock but don't count as a day of service either.
                 if ($newEndDate->greaterThanOrEqualTo($day)) {
                     $newEndDate->addDay();
@@ -204,7 +204,7 @@ class Tweet extends Model
         // Handle maintenance days
         $lastDate = $lastTweet->created->copy();
         foreach (config('app.maintenance_days') as $day) {
-            // Add a day for each maintenance day, to offset the counter (reduceing the difference)
+            // Add a day for each maintenance day, to offset the counter (reducing the difference)
             // Maintenance days don't reset the clock but don't count as a day of service either.
             if ($lastDate->greaterThanOrEqualTo($day)) {
                 $lastDate->addDay();
