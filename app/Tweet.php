@@ -208,7 +208,7 @@ class Tweet extends Model
 
         $lastDate = $lastTweet->created->copy();
         $now = Carbon::now(config('app.timezone'));
-        $counter = $now->copy();
+        $counterNow = $now->copy();
 
         // Handle maintenance days
         foreach ($maintenanceDays as $day) {
@@ -216,14 +216,15 @@ class Tweet extends Model
             // day occurred during a streak, reducing the difference.
             // Maintenance days don't reset the clock but don't count as a day of service either.
             if ($lastDate->lessThanOrEqualTo($day) && $now->greaterThanOrEqualTo($day)) {
-                $counter->subDay();
+                $counterNow->subDay();
             }
         }
 
-        $currDiff = $lastDate->diffInSeconds($counter);
+        $currDiff = $lastDate->diffInSeconds($counterNow);
         if ($currDiff > $longestDiff) {
             $startDate = $lastDate;
             $endDate = $now;
+            $counter = $counterNow;
         }
 
         return [
