@@ -25,7 +25,7 @@
                 </p>
                 @if (isset($longestStreak))
                     <p class="subtitle is-5">
-                        Longest uninterrupted service streak: {{ $longestStreak }}.*
+                        Longest streak of service without system failure: {{ $longestStreak }}.*
                     </p>
                 @endif
             </div>
@@ -39,7 +39,7 @@
                                 <p>*LRT currently on reduced schedule due to COVID-19*</p>
                             </div>
                             <div class="message-body">
-                                Longest uninterrupted <b>full service</b> streak: 5 days between Feb 20, 2020 and Feb 26, 2020.
+                                Longest streak of <b>full service</b> without system failure: 5 days between Feb 20, 2020 and Feb 26, 2020.
                             </div>
                         </article>
                         <br>

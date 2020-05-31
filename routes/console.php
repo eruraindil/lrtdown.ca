@@ -174,7 +174,7 @@ Artisan::command('twitter:update', function () {
             $interval = CarbonInterval::seconds($thisStreak)->subtract(
                 CarbonInterval::seconds($prevStreak)
             );
-            $status .= 'New uninterrupted service record! ' .
+            $status .= 'New service record! ' .
                 "\u{1F386}" . "\u{1F37E}" . "\u{1F386}" . ' ' .
                 '(increased by ' .
                 $interval->cascade()->forHumans() . ') ';
@@ -225,7 +225,7 @@ Artisan::command('twitter:streak {dow}', function ($dow) {
     Log::debug($days);
 
     if ($days > 0) {
-        $status = 'The longest streak of uninterupted service has been ' .
+        $status = 'The longest streak of service without system failure has been ' .
             Tweet::formatKeycap($days) .
             'day' . ($days > 1 ? 's' : '') . ' between ' .
             $startDate->toFormattedDateString() . ' and ' .
