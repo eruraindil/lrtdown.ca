@@ -230,7 +230,7 @@ Artisan::command('twitter:streak {dow}', function ($dow) {
             'day' . ($days > 1 ? 's' : '') . ' between ' .
             $startDate->toFormattedDateString() . ' and ' .
             $endDate->toFormattedDateString() .
-            '. https://www.lrtdown.ca #ottlrt #OttawaLRT';
+            '. *LRT CURRENTLY ON REDUCED SCHEDULE* https://www.lrtdown.ca #ottlrt #OttawaLRT';
 
         if (!App::environment('production')) {
             $this->info($status);
