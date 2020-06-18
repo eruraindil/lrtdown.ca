@@ -250,8 +250,8 @@ Artisan::command('twitter:streak {dow}', function ($dow) {
 })->describe('Send out streak tweet to the LRT Down twitter account, only on day of week specified (php dow, 0 = Sun..6 = Sat)');
 
 Artisan::command('debug:read', function () {
-    $headers = ['id', 'text', 'created'];
-    $tweets = Tweet::all(['id', 'text', 'created'])->toArray();
+    $headers = ['id', 'uid', 'text', 'created'];
+    $tweets = Tweet::all(['id', 'uid', 'text', 'created'])->toArray();
     $this->table($headers, $tweets);
 })->describe('See db rows for debugging purposes');
 
@@ -296,3 +296,33 @@ Artisan::command('debug:clear', function () {
     Cache::put('lastTweet', Tweet::last()->get()[0]);
     Cache::put('longestStreak', Tweet::streak());
 })->describe('Clear app caches');
+
+Artisan::command('debug:new', function () {
+    $genTweetUid = Tweet::where('uid', '<', 1000000000000000000)
+        ->orderBy('uid', 'desc')
+        ->pluck('uid')
+        ->first();
+
+    if (!isset($genTweetUid)) {
+        // no manually generated tweets yet, set a sane low default to increment against.
+        // Real tweets have 19 digit ids.
+        $genTweetUid = 0;
+    } else {
+        // $genTweetUid must be a generated tweet, so will be out of the real tweet digit scope
+        // and can be incremented.
+    }
+
+    $datetime = $this->ask('What date and time should this be? Y-m-d hh:mm');
+    $tweetDate = Carbon::parse($datetime)->setTimeZone(config('app.timezone'));
+
+    $text = $this->ask('What happened?');
+
+    $tweet = new Tweet();
+    $tweet->uid = $genTweetUid + 1;
+    $tweet->text = 'Manual entry: ' . $text;
+    $tweet->created = $tweetDate;
+    $tweet->save();
+
+    Artisan::call('debug:clear');
+
+})->describe('Create a new tweet in case OCTranspoLive doesnt.');
