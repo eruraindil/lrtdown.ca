@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Tweet;
@@ -27,8 +28,9 @@ Route::get('/', function () {
     $trigger = Tweet::filterTrigger($tweet->text);
 
     $maintenance = false;
+    $now = Carbon::now(config('app.timezone'));
     foreach (config('app.maintenance_days') as $day) {
-        if (Carbon::now(config('app.timezone'))->isSameDay($day)) {
+        if ($now->isSameDay($day)) {
             $maintenance = true;
             break;
         }
