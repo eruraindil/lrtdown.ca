@@ -26,14 +26,27 @@ Route::get('/', function () {
 
     $trigger = Tweet::filterTrigger($tweet->text);
 
-    $contextualClass = 'success';
-    $status = 'No';
-    if ($mins < 20) {
-        $contextualClass = 'danger';
-        $status = 'Yes';
-    } elseif ($mins < 60) {
+    $maintenance = false;
+    foreach (config('app.maintenance_days') as $day) {
+        if (Carbon::now(config('app.timezone'))->isSameDay($day)) {
+            $maintenance = true;
+            break;
+        }
+    }
+
+    if ($maintenance === false) {
+        $contextualClass = 'success';
+        $status = 'No';
+        if ($mins < 20) {
+            $contextualClass = 'danger';
+            $status = 'Yes';
+        } elseif ($mins < 60) {
+            $contextualClass = 'warning';
+            $status = 'Maybe ¯\_(ツ)_/¯';
+        }
+    } else {
         $contextualClass = 'warning';
-        $status = 'Maybe ¯\_(ツ)_/¯';
+        $status = 'Closed for maintenance';
     }
 
     list($startDate, $endDate, $counter) = Cache::get('longestStreak');
