@@ -246,5 +246,9 @@ return [
         Illuminate\Support\Carbon::createFromDate(2020, 6, 22, config('app.timezone')),
         Illuminate\Support\Carbon::createFromDate(2020, 6, 23, config('app.timezone')),
         Illuminate\Support\Carbon::createFromDate(2020, 6, 24, config('app.timezone')),
+        Illuminate\Support\Carbon::createFromDate(2020, 6, 25, config('app.timezone')),
+        Illuminate\Support\Carbon::createFromDate(2020, 6, 26, config('app.timezone')),
+        Illuminate\Support\Carbon::createFromDate(2020, 6, 27, config('app.timezone')),
+        Illuminate\Support\Carbon::createFromDate(2020, 6, 28, config('app.timezone')),
     ]
 ];
