@@ -183,7 +183,8 @@ Artisan::command('twitter:update', function () {
         }
 
         // End of tweet boilerplate
-        $status .= '*LRT CURRENTLY ON REDUCED SCHEDULE* https://www.lrtdown.ca #ottlrt #OttawaLRT';
+        // $status .= '*LRT CURRENTLY ON REDUCED SCHEDULE* ';
+        $status .= 'https://www.lrtdown.ca #ottlrt #OttawaLRT';
 
         if (!App::environment('production')) {
             $this->info($status);
@@ -229,8 +230,9 @@ Artisan::command('twitter:streak {dow}', function ($dow) {
             Tweet::formatKeycap($days) .
             'day' . ($days > 1 ? 's' : '') . ' between ' .
             $startDate->toFormattedDateString() . ' and ' .
-            $endDate->toFormattedDateString() .
-            '. *LRT CURRENTLY ON REDUCED SCHEDULE* https://www.lrtdown.ca #ottlrt #OttawaLRT';
+            $endDate->toFormattedDateString() . '. ' .
+            //'*LRT CURRENTLY ON REDUCED SCHEDULE* ' . 
+            'https://www.lrtdown.ca #ottlrt #OttawaLRT';
 
         if (!App::environment('production')) {
             $this->info($status);

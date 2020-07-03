@@ -21,7 +21,7 @@
                     @if (isset($trigger))
                         <span class="tag is-white is-medium">{{ $trigger }}</span>
                     @endif
-                    reported {{ $lastUpdate }}*
+                    reported {{ $lastUpdate }}
                 </p>
                 @if (isset($longestStreak))
                     <p class="subtitle is-5">
@@ -36,7 +36,7 @@
                     <div class="column is-three-fifths is-offset-one-fifth">
                         <article class="message">
                             <div class="message-header">
-                                <p>*LRT currently on reduced schedule due to COVID-19*</p>
+                                <p>*LRT was on reduced schedule due to COVID-19 between March and June*</p>
                             </div>
                             <div class="message-body">
                                 Longest streak of <b>full service</b> without system failure: 5 days between Feb 20, 2020 and Feb 26, 2020.
