@@ -251,5 +251,12 @@ return [
         Illuminate\Support\Carbon::createFromDate(2020, 6, 27, config('app.timezone')),
         Illuminate\Support\Carbon::createFromDate(2020, 6, 28, config('app.timezone')),
         Illuminate\Support\Carbon::createFromDate(2020, 8, 30, config('app.timezone')),
+        Illuminate\Support\Carbon::createFromDate(2021, 8, 8, config('app.timezone')),
+        Illuminate\Support\Carbon::createFromDate(2021, 8, 9, config('app.timezone')),
+        Illuminate\Support\Carbon::createFromDate(2021, 8, 10, config('app.timezone')),
+        Illuminate\Support\Carbon::createFromDate(2021, 8, 11, config('app.timezone')),
+        Illuminate\Support\Carbon::createFromDate(2021, 8, 12, config('app.timezone')),
+        Illuminate\Support\Carbon::createFromDate(2021, 8, 13, config('app.timezone')),
+        Illuminate\Support\Carbon::createFromDate(2021, 8, 14, config('app.timezone')),
     ]
 ];
