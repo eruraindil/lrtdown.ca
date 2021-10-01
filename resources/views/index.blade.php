@@ -8,6 +8,14 @@
     <link href="{{ mix('/css/app.css') }}" rel="stylesheet">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <script defer src="{{ mix('/js/app.js') }}"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0L267MBFTT"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-0L267MBFTT');
+    </script>
 </head>
 <body>
     <section class="hero is-danger is-fullheight">
