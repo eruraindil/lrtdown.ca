@@ -10,7 +10,26 @@
     <script defer src="{{ mix('/js/app.js') }}"></script>
 </head>
 <body>
-    <section class="hero is-{{ $contextualClass }} is-fullheight">
+    <section class="hero is-danger is-fullheight">
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                <h1 class="title is-1">
+                    Is the LRT Down? YES
+                </h1>
+                <p class="title is-3">
+                    Last issue
+                    <span class="tag is-white is-medium">derailment</span>
+                    reported Sept 19, 2021
+                </p>
+                @if (isset($longestStreak))
+                    <p class="subtitle is-5">
+                        Longest streak of service without system failure: {{ $longestStreak }}.*
+                    </p>
+                @endif
+            </div>
+        </div>
+    </section>
+    <!--<section class="hero is-{{ $contextualClass }} is-fullheight">
         <div class="hero-body">
             <div class="container has-text-centered">
                 <h1 class="title is-1">
@@ -47,7 +66,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section>-->
     <footer class="footer">
         <div class="content has-text-centered">
             <p>
