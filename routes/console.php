@@ -56,18 +56,17 @@ Artisan::command('twitter:get', function () {
             }
         }
 
-        if ($maintenance === false) {
-            $tweet = Tweet::firstOrCreate(
-                ['uid' => $ot->id],
-                [
-                    'text' => $ot->full_text,
-                    'created' => $tweetDate,
-                ]
-            );
-        } else {
-            // unset an array element inside a foreach from: https://stackoverflow.com/a/1949275
-            unset($filteredTweets[$key]);
-        }
+        $tweet = Tweet::firstOrCreate(
+            ['uid' => $ot->id],
+            [
+                'text' => $ot->full_text,
+                'created' => $tweetDate,
+            ]
+        );
+//         } else {
+//             // unset an array element inside a foreach from: https://stackoverflow.com/a/1949275
+//             unset($filteredTweets[$key]);
+//         }
     }
 
     unset($ot);
@@ -81,10 +80,10 @@ Artisan::command('twitter:get', function () {
         Cache::put('longestStreak', Tweet::streak());
 
         $tweetTime = $lastTweet->created->diffInMinutes('now');
-        if ($tweetTime > 30) {
+        if ($tweetTime > 30 && $maintenance === false) {
             $trigger = Tweet::filterTrigger($newTweet->text);
 
-            // Tweet if greater than 30 mins since the last tweet
+            // Tweet if greater than 30 mins since the last tweet && not on a maintenance day
             $status = 'Mr. Gaeta, restart the clock. ' .
                 'Update ' .
                 $newTweet->created->toFormattedDateString() . ' ' .
