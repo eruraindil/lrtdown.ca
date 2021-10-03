@@ -55,11 +55,13 @@ Artisan::command('twitter:get', function () {
                 $maintenance = true;
             }
         }
+        
+        $tweetText = substr(html_entity_decode(trim($ot->full_text)), 0, 280);
 
         $tweet = Tweet::firstOrCreate(
             ['uid' => $ot->id],
             [
-                'text' => substr($ot->full_text, 0, 280),
+                'text' => $tweetText,
                 'created' => $tweetDate,
             ]
         );
