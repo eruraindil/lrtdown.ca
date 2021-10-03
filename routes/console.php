@@ -149,68 +149,66 @@ Artisan::command('twitter:update', function () {
     $days = $tweetDate->diffInDays('now');
 
     // Tweet an update once a day, only if we're not on maintenance today.
-    if ($days > 0) {
-        if ($maintenance === false) {
-            list($startDate, $endDate, $counter) = Cache::get('longestStreak', [
-                Carbon::now(config('app.timezone')),
-                Carbon::now(config('app.timezone')),
-                Carbon::now(config('app.timezone')),
-            ]);
+    if ($maintenance === false && $days > 0) {
+        list($startDate, $endDate, $counter) = Cache::get('longestStreak', [
+            Carbon::now(config('app.timezone')),
+            Carbon::now(config('app.timezone')),
+            Carbon::now(config('app.timezone')),
+        ]);
 
-            Log::debug($days);
+        Log::debug($days);
 
-            $status = 'Update ' .
-                Carbon::now(config('app.timezone'))->toFormattedDateString() . ': ' .
-                Tweet::formatKeycap($days) .
-                'days since last issue. ';
+        $status = 'Update ' .
+            Carbon::now(config('app.timezone'))->toFormattedDateString() . ': ' .
+            Tweet::formatKeycap($days) .
+            'days since last issue. ';
 
-            // Add streak info if new service record
-            $prevStreak = $startDate->diffInSeconds($counter);
-            $thisStreak = $tweetDate->diffInSeconds('now');
+        // Add streak info if new service record
+        $prevStreak = $startDate->diffInSeconds($counter);
+        $thisStreak = $tweetDate->diffInSeconds('now');
 
-            Log::debug($prevStreak);
-            Log::debug($thisStreak);
+        Log::debug($prevStreak);
+        Log::debug($thisStreak);
 
-            if ($prevStreak > 0 && $thisStreak > $prevStreak) {
-                $interval = CarbonInterval::seconds($thisStreak)->subtract(
-                    CarbonInterval::seconds($prevStreak)
-                );
-                $status .= 'New service record! ' .
-                    "\u{1F386}" . "\u{1F37E}" . "\u{1F386}" . ' ' .
-                    '(increased by ' .
-                    $interval->cascade()->forHumans() . ') ';
+        if ($prevStreak > 0 && $thisStreak > $prevStreak) {
+            $interval = CarbonInterval::seconds($thisStreak)->subtract(
+                CarbonInterval::seconds($prevStreak)
+            );
+            $status .= 'New service record! ' .
+                "\u{1F386}" . "\u{1F37E}" . "\u{1F386}" . ' ' .
+                '(increased by ' .
+                $interval->cascade()->forHumans() . ') ';
 
-                Cache::put('longestStreak', Tweet::streak());
-            }
+            Cache::put('longestStreak', Tweet::streak());
+        }
         
-        } else { // maintenance === true
-            $status = 'Update ' .
-                Carbon::now(config('app.timezone'))->toFormattedDateString() . ': ' .
-                Tweet::formatKeycap(0) .
-                'days since last issue. LRT is out of service. ';
-        }
-
-        // End of tweet boilerplate
-        // $status .= '*LRT CURRENTLY ON REDUCED SCHEDULE* ';
-        $status .= 'https://www.lrtdown.ca #ottlrt #OttawaLRT';
-
-        if (!App::environment('production')) {
-            $this->info($status);
-        } else {
-            $connection = resolve('Abraham\TwitterOAuth\TwitterOAuth');
-            $update = $connection->post('statuses/update', ['status' => $status]);
-
-            if (isset($update) && isset($update->id)) {
-                $this->info('Tweet sent. ' . $update->id);
-                Log::info('Tweet sent. ' . $update->id);
-            } else {
-                $this->error('Could not send tweet. ' . dump($update));
-                Log::error('Could not send tweet. ' . dump($update));
-            }
-        }
-
+    } elseif ($maintenance === true) {
+        $status = 'Update ' .
+            Carbon::now(config('app.timezone'))->toFormattedDateString() . ': ' .
+            Tweet::formatKeycap(0) .
+            'days since last issue. LRT is out of service. ';
     } else {
         Log::debug('Less than 1 day since last tweet.' . dump($tweet));
+        return;
+    }
+
+    // End of tweet boilerplate
+    // $status .= '*LRT CURRENTLY ON REDUCED SCHEDULE* ';
+    $status .= 'https://www.lrtdown.ca #ottlrt #OttawaLRT';
+
+    if (!App::environment('production')) {
+        $this->info($status);
+    } else {
+        $connection = resolve('Abraham\TwitterOAuth\TwitterOAuth');
+        $update = $connection->post('statuses/update', ['status' => $status]);
+
+        if (isset($update) && isset($update->id)) {
+            $this->info('Tweet sent. ' . $update->id);
+            Log::info('Tweet sent. ' . $update->id);
+        } else {
+            $this->error('Could not send tweet. ' . dump($update));
+            Log::error('Could not send tweet. ' . dump($update));
+        }
     }
 })->describe('Send out an update tweet to the LRT Down twitter account');
 
