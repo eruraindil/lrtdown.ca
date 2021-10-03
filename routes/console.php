@@ -59,7 +59,7 @@ Artisan::command('twitter:get', function () {
         $tweet = Tweet::firstOrCreate(
             ['uid' => $ot->id],
             [
-                'text' => substr($ot->full_text, 1, 280),
+                'text' => substr($ot->full_text, 0, 280),
                 'created' => $tweetDate,
             ]
         );
