@@ -55,7 +55,7 @@ Artisan::command('twitter:get', function () {
                 $maintenance = true;
             }
         }
-        
+
         $tweetText = substr(html_entity_decode(trim($ot->full_text)), 0, 280);
 
         $tweet = Tweet::firstOrCreate(
@@ -182,7 +182,7 @@ Artisan::command('twitter:update', function () {
 
             Cache::put('longestStreak', Tweet::streak());
         }
-        
+
     } elseif ($maintenance === true) {
         $status = 'Update ' .
             Carbon::now(config('app.timezone'))->toFormattedDateString() . ': ' .
@@ -194,7 +194,7 @@ Artisan::command('twitter:update', function () {
     }
 
     // End of tweet boilerplate
-    // $status .= '*LRT CURRENTLY ON REDUCED SCHEDULE* ';
+    $status .= '*LRT CURRENTLY ON REDUCED SCHEDULE* ';
     $status .= 'https://www.lrtdown.ca #ottlrt #OttawaLRT';
 
     if (!App::environment('production')) {
@@ -238,7 +238,7 @@ Artisan::command('twitter:streak {dow}', function ($dow) {
             'day' . ($days > 1 ? 's' : '') . ' between ' .
             $startDate->toFormattedDateString() . ' and ' .
             $endDate->toFormattedDateString() . '. ' .
-            //'*LRT CURRENTLY ON REDUCED SCHEDULE* ' . 
+            //'*LRT CURRENTLY ON REDUCED SCHEDULE* ' .
             'https://www.lrtdown.ca #ottlrt #OttawaLRT';
 
         if (!App::environment('production')) {

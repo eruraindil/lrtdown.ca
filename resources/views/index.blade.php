@@ -18,6 +18,46 @@
     </script>
 </head>
 <body>
+    @if ($now > $resumeServiceDay)
+    <section class="hero is-warning is-fullheight">
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                <h1 class="title is-1">
+                    Is the LRT Down? Kinda, who knows? ¯\_(ツ)_/¯*
+                </h1>
+                <p class="title is-3">
+                    Last issue
+                    @if (isset($trigger))
+                        <span class="tag is-white is-medium">{{ $trigger }}</span>
+                    @endif
+                    reported {{ $lastUpdate }}
+                </p>
+                @if (isset($longestStreak))
+                    <p class="subtitle is-5">
+                        Longest streak of service without system failure: {{ $longestStreak }}.
+                    </p>
+                @endif
+            </div>
+        </div>
+        <div class="hero-foot">
+            <div class="container has-text-centered">
+                <div class="columns">
+                    <div class="column is-three-fifths is-offset-one-fifth">
+                        <article class="message">
+                            <div class="message-header">
+                                <p>*LRT is running on reduced schedule*</p>
+                            </div>
+                            <div class="message-body">
+                                Due to recovery from derailment on Sept 19, 2021. Full service expected December 2021.
+                            </div>
+                        </article>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    @else
     <section class="hero is-danger is-fullheight">
         <div class="hero-body">
             <div class="container has-text-centered">
@@ -37,7 +77,9 @@
             </div>
         </div>
     </section>
-    <!--<section class="hero is-{{ $contextualClass }} is-fullheight">
+    @endif
+
+    {{-- <section class="hero is-{{ $contextualClass }} is-fullheight">
         <div class="hero-body">
             <div class="container has-text-centered">
                 <h1 class="title is-1">
@@ -74,7 +116,7 @@
                 </div>
             </div>
         </div>
-    </section>-->
+    </section> --}}
     <footer class="footer">
         <div class="content has-text-centered">
             <p>

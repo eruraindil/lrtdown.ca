@@ -29,6 +29,7 @@ Route::get('/', function () {
 
     $maintenance = false;
     $now = Carbon::now(config('app.timezone'));
+    $resumeServiceDay = Carbon::parse('2021-11-12 00:00:00')->setTimeZone(config('app.timezone'));
     foreach (config('app.maintenance_days') as $day) {
         if ($now->isSameDay($day)) {
             $maintenance = true;
@@ -60,5 +61,5 @@ Route::get('/', function () {
         $longestStreak = null;
     }
 
-    return view('index', compact('contextualClass', 'status', 'trigger', 'lastUpdate', 'longestStreak'));
+    return view('index', compact('contextualClass', 'status', 'trigger', 'lastUpdate', 'longestStreak', 'now', 'resumeServiceDay'));
 });
