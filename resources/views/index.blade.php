@@ -18,7 +18,7 @@
     </script>
 </head>
 <body>
-    @if ($now > $resumeServiceDay)
+    {{-- @if ($now > $resumeServiceDay)
     <section class="hero is-warning is-fullheight">
         <div class="hero-body">
             <div class="container has-text-centered">
@@ -77,9 +77,9 @@
             </div>
         </div>
     </section>
-    @endif
+    @endif --}}
 
-    {{-- <section class="hero is-{{ $contextualClass }} is-fullheight">
+    <section class="hero is-{{ $contextualClass }} is-fullheight">
         <div class="hero-body">
             <div class="container has-text-centered">
                 <h1 class="title is-1">
@@ -94,12 +94,12 @@
                 </p>
                 @if (isset($longestStreak))
                     <p class="subtitle is-5">
-                        Longest streak of service without system failure: {{ $longestStreak }}.*
+                        Longest streak of service without system failure: {{ $longestStreak }}.
                     </p>
                 @endif
             </div>
         </div>
-        <div class="hero-foot">
+        {{-- <div class="hero-foot">
             <div class="container has-text-centered">
                 <div class="columns">
                     <div class="column is-three-fifths is-offset-one-fifth">
@@ -115,8 +115,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </section> --}}
+        </div> --}}
+    </section>
     <footer class="footer">
         <div class="content has-text-centered">
             <p>

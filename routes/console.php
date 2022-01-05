@@ -194,7 +194,7 @@ Artisan::command('twitter:update', function () {
     }
 
     // End of tweet boilerplate
-    $status .= '*LRT CURRENTLY ON REDUCED SCHEDULE* ';
+    // $status .= '*LRT CURRENTLY ON REDUCED SCHEDULE* ';
     $status .= 'https://www.lrtdown.ca #ottlrt #OttawaLRT';
 
     if (!App::environment('production')) {
