@@ -18,6 +18,13 @@ class TweetTest extends TestCase
         \Artisan::call('debug:clear');
     }
 
+    protected function tearDown(): void
+    {
+        // reset cache
+        \Artisan::call('debug:clear');
+        parent::tearDown();
+    }
+
     /**
      * Test if application runs with no current outage.
      *
