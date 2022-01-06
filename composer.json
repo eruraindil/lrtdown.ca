@@ -16,6 +16,7 @@
         "laravel/tinker": "^1.0",
         "predis/predis": "^1.1",
         "symfony/polyfill-ctype": "1.17",
+        "symfony/polyfill-mbstring": "1.1",
         "voku/stringy": "^6.2"
     },
     "require-dev": {
