@@ -48,6 +48,6 @@ $factory->define(Tweet::class, function (Faker $faker) {
     return [
         'uid' => $faker->unique()->randomNumber(5),
         'text' => $randomRegex . ' -> ' . $faker->regexify($randomRegex),
-        'created' => $faker->unique()->dateTimeThisYear(),
+        'created' => $faker->unique()->dateTimeThisYear('-1 day'),
     ];
 });

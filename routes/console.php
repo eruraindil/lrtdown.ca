@@ -302,7 +302,10 @@ Artisan::command('debug:tweet', function () {
 Artisan::command('debug:clear', function () {
     Cache::forget('lastTweet');
     Cache::forget('longestStreak');
-    Cache::put('lastTweet', Tweet::last()->get()[0]);
+    $tweets = Tweet::last()->get();
+    if (count($tweets) > 0) {
+        Cache::put('lastTweet', Tweet::last()->get()[0]);
+    }
     Cache::put('longestStreak', Tweet::streak());
 })->describe('Clear app caches');
 
